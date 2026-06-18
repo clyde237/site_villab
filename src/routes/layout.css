@@ -1,84 +1,124 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
-@import "shadcn-svelte/tailwind.css";
-@import "@fontsource-variable/inter";
-@import "@fontsource-variable/playfair-display";
+@import 'tw-animate-css';
+@import 'shadcn-svelte/tailwind.css';
+/* Remplacement de Inter par Jost pour le corps de texte */
+@import '@fontsource-variable/jost';
+@import '@fontsource-variable/playfair-display';
 
 @custom-variant dark (&:is(.dark *));
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
 :root {
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.141 0.005 285.823);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.141 0.005 285.823);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.141 0.005 285.823);
-	--primary: oklch(0.21 0.006 285.885);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.967 0.001 286.375);
-	--secondary-foreground: oklch(0.21 0.006 285.885);
-	--muted: oklch(0.967 0.001 286.375);
-	--muted-foreground: oklch(0.552 0.016 285.938);
-	--accent: oklch(0.967 0.001 286.375);
-	--accent-foreground: oklch(0.21 0.006 285.885);
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.92 0.004 286.32);
-	--input: oklch(0.92 0.004 286.32);
-	--ring: oklch(0.705 0.015 286.067);
-	--chart-1: oklch(0.87 0 0);
-	--chart-2: oklch(0.556 0 0);
-	--chart-3: oklch(0.439 0 0);
-	--chart-4: oklch(0.371 0 0);
-	--chart-5: oklch(0.269 0 0);
-	--radius: 0.625rem;
-	--sidebar: oklch(0.985 0 0);
-	--sidebar-foreground: oklch(0.141 0.005 285.823);
-	--sidebar-primary: oklch(0.21 0.006 285.885);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.967 0.001 286.375);
-	--sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-	--sidebar-border: oklch(0.92 0.004 286.32);
-	--sidebar-ring: oklch(0.705 0.015 286.067);
+	/* 1. PALETTE VILLA BOUTANGA (Design System) */
+	--vb-green: #1e3a2f;
+	--vb-green2: #2d5240;
+	--vb-green3: #3a6b52;
+	--vb-gold: #b8892a;
+	--vb-gold2: #d4a84b;
+	--vb-gold3: #f0d080;
+	--vb-ivory: #f9f5ee;
+	--vb-ivory2: #ede6d8;
+	--vb-ivory3: #ddd4c0;
+	--vb-dark: #1a1209;
+	--vb-slate: #5c5346;
+	--vb-slate2: #8c8070;
+	--vb-white: #ffffff;
+
+	/* 2. MAPPING SHADCN -> VILLA BOUTANGA */
+	--background: var(--vb-white);
+	--foreground: var(--vb-dark);
+	--card: var(--vb-white);
+	--card-foreground: var(--vb-dark);
+	--popover: var(--vb-white);
+	--popover-foreground: var(--vb-dark);
+
+	/* Boutons CTA et actions principales = Gold */
+	--primary: var(--vb-gold);
+	--primary-foreground: var(--vb-white);
+
+	/* Éléments secondaires = Green */
+	--secondary: var(--vb-green);
+	--secondary-foreground: var(--vb-white);
+
+	/* Fonds clairs (ex: sections témoignages) = Ivory */
+	--muted: var(--vb-ivory);
+	--muted-foreground: var(--vb-slate);
+
+	/* Accents = Gold clair */
+	--accent: var(--vb-gold3);
+	--accent-foreground: var(--vb-dark);
+
+	--destructive: oklch(0.577 0.245 27.325); /* Couleur d'erreur par défaut */
+
+	--border: var(--vb-ivory3);
+	--input: var(--vb-ivory3);
+	--ring: var(--vb-gold);
+
+	/* Arrondi standard défini dans le Design System (8px = 0.5rem) */
+	--radius: 0.5rem;
+
+	/* Couleurs Sidebar (optionnel si tu utilises le composant Sidebar) */
+	--sidebar: var(--vb-ivory);
+	--sidebar-foreground: var(--vb-dark);
+	--sidebar-primary: var(--vb-green);
+	--sidebar-primary-foreground: var(--vb-white);
+	--sidebar-accent: var(--vb-ivory2);
+	--sidebar-accent-foreground: var(--vb-green);
+	--sidebar-border: var(--vb-ivory3);
+	--sidebar-ring: var(--vb-gold);
 }
 
+/* Version sombre (Dark mode minimaliste si besoin) */
 .dark {
-	--background: oklch(0.141 0.005 285.823);
-	--foreground: oklch(0.985 0 0);
-	--card: oklch(0.21 0.006 285.885);
-	--card-foreground: oklch(0.985 0 0);
-	--popover: oklch(0.21 0.006 285.885);
-	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.92 0.004 286.32);
-	--primary-foreground: oklch(0.21 0.006 285.885);
-	--secondary: oklch(0.274 0.006 286.033);
-	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.274 0.006 286.033);
-	--muted-foreground: oklch(0.705 0.015 286.067);
-	--accent: oklch(0.274 0.006 286.033);
-	--accent-foreground: oklch(0.985 0 0);
+	--background: var(--vb-dark);
+	--foreground: var(--vb-ivory);
+	--card: var(--vb-green);
+	--card-foreground: var(--vb-ivory);
+	--popover: var(--vb-dark);
+	--popover-foreground: var(--vb-ivory);
+	--primary: var(--vb-gold);
+	--primary-foreground: var(--vb-white);
+	--secondary: var(--vb-green2);
+	--secondary-foreground: var(--vb-white);
+	--muted: #2a2218;
+	--muted-foreground: var(--vb-slate2);
+	--accent: var(--vb-gold2);
+	--accent-foreground: var(--vb-white);
 	--destructive: oklch(0.704 0.191 22.216);
-	--border: oklch(1 0 0 / 10%);
-	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.552 0.016 285.938);
-	--chart-1: oklch(0.87 0 0);
-	--chart-2: oklch(0.556 0 0);
-	--chart-3: oklch(0.439 0 0);
-	--chart-4: oklch(0.371 0 0);
-	--chart-5: oklch(0.269 0 0);
-	--sidebar: oklch(0.21 0.006 285.885);
-	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.274 0.006 286.033);
-	--sidebar-accent-foreground: oklch(0.985 0 0);
-	--sidebar-border: oklch(1 0 0 / 10%);
-	--sidebar-ring: oklch(0.552 0.016 285.938);
+	--border: rgba(255, 255, 255, 0.1);
+	--input: rgba(255, 255, 255, 0.15);
+	--ring: var(--vb-gold);
 }
 
 @theme inline {
-	--font-sans: 'Inter Variable', sans-serif;
+	/* Injection des polices du Design System */
+	--font-sans: 'Jost Variable', sans-serif;
+	--font-serif: 'Playfair Display Variable', serif;
+
+	/* Classes Tailwind personnalisées (ex: text-vb-green, bg-vb-gold) */
+	--color-vb-green: var(--vb-green);
+	--color-vb-green2: var(--vb-green2);
+	--color-vb-green3: var(--vb-green3);
+	--color-vb-gold: var(--vb-gold);
+	--color-vb-gold2: var(--vb-gold2);
+	--color-vb-gold3: var(--vb-gold3);
+	--color-vb-ivory: var(--vb-ivory);
+	--color-vb-ivory2: var(--vb-ivory2);
+	--color-vb-ivory3: var(--vb-ivory3);
+	--color-vb-dark: var(--vb-dark);
+	--color-vb-slate: var(--vb-slate);
+	--color-vb-slate2: var(--vb-slate2);
+	--color-vb-white: var(--vb-white);
+
+	/* Ombres du Design System (ex: shadow-room, shadow-booking) */
+	--shadow-room: 0 12px 40px rgba(30, 58, 47, 0.12);
+	--shadow-feature: 0 8px 28px rgba(30, 58, 47, 0.1);
+	--shadow-booking: 0 4px 32px rgba(30, 58, 47, 0.12);
+	--shadow-testi: 0 4px 24px rgba(30, 58, 47, 0.06);
+	--shadow-nav: 0 1px 12px rgba(30, 58, 47, 0.06);
+
+	/* Mapping Tailwind généré par Shadcn */
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -87,11 +127,6 @@
 	--color-sidebar-primary: var(--sidebar-primary);
 	--color-sidebar-foreground: var(--sidebar-foreground);
 	--color-sidebar: var(--sidebar);
-	--color-chart-5: var(--chart-5);
-	--color-chart-4: var(--chart-4);
-	--color-chart-3: var(--chart-3);
-	--color-chart-2: var(--chart-2);
-	--color-chart-1: var(--chart-1);
 	--color-ring: var(--ring);
 	--color-input: var(--input);
 	--color-border: var(--border);
@@ -117,7 +152,6 @@
 	--radius-2xl: calc(var(--radius) * 1.8);
 	--radius-3xl: calc(var(--radius) * 2.2);
 	--radius-4xl: calc(var(--radius) * 2.6);
-	--font-serif: 'Playfair Display Variable', serif;
 }
 
 @layer base {
@@ -125,9 +159,99 @@
 		@apply border-border outline-ring/50;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background font-sans text-foreground;
 	}
-	html {
-		@apply font-serif;
+	/* Application automatique de la police Playfair Display sur les titres */
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply font-serif text-vb-green;
 	}
 }
+
+/* Animations d'entrée fluides et élégantes (Premium UI) */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(24px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes scaleBg {
+	from {
+		transform: scale(1.06);
+	}
+	to {
+		transform: scale(1);
+	}
+}
+
+.animate-fade-in-up {
+	animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+	animation: fadeIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-scale-bg {
+	animation: scaleBg 2.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.delay-100 {
+	animation-delay: 100ms;
+}
+.delay-150 {
+	animation-delay: 150ms;
+}
+.delay-200 {
+	animation-delay: 200ms;
+}
+.delay-300 {
+	animation-delay: 300ms;
+}
+.delay-400 {
+	animation-delay: 400ms;
+}
+.delay-450 {
+	animation-delay: 450ms;
+}
+.delay-500 {
+	animation-delay: 500ms;
+}
+.delay-600 {
+	animation-delay: 600ms;
+}
+
+/* Effet Parallaxe Moderne via Scroll-Driven Animations (Centré X/Y) */
+@keyframes parallaxY {
+	from {
+		transform: translate(-50%, -58%);
+	}
+	to {
+		transform: translate(-50%, -42%);
+	}
+}
+
+.parallax-img {
+	animation: parallaxY linear both;
+	animation-timeline: view();
+	animation-range: entry exit;
+}
+
