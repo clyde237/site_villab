@@ -8,9 +8,9 @@
 		<!-- En-tête de la section -->
 		<div class="text-center mb-16">
 			<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 flex items-center justify-center gap-4">
-				<span class="w-8 h-[1px] bg-vb-gold"></span>
+				<span class="w-8 h-px bg-vb-gold"></span>
 				Offres Spéciales
-				<span class="w-8 h-[1px] bg-vb-gold"></span>
+				<span class="w-8 h-px bg-vb-gold"></span>
 			</span>
 			<h2 class="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-vb-green leading-[1.2]">
 				Séjours & Engagement Solidaire
@@ -31,7 +31,7 @@
 				<!-- Contenu -->
 				<div class="relative z-10 transform transition-transform duration-300 group-hover:-translate-y-2">
 					<!-- Badge Design System -->
-					<span class="bg-vb-gold text-vb-white text-[0.68rem] font-bold tracking-[0.07em] uppercase px-[0.75rem] py-[0.28rem] rounded-[4px] inline-block mb-4">
+					<span class="bg-vb-gold text-vb-white text-[0.68rem] font-bold tracking-[0.07em] uppercase px-3 py-[0.28rem] rounded-[4px] inline-block mb-4">
 						Famille
 					</span>
 					

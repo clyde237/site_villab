@@ -1,124 +1,110 @@
 <script lang="ts">
-	import { Star, Quote, ChevronLeft, ChevronRight } from '@lucide/svelte';
+	import { Star, ArrowLeft, ArrowRight } from '@lucide/svelte';
 
-	// Données des témoignages (3 différents)
-	const testimonials = [
+	// État du slider
+	let currentIndex = $state(0);
+
+	// Données des témoignages
+	const reviews = [
 		{
 			id: 1,
-			text: "Un séjour inoubliable ! Le cadre est somptueux et l'engagement écologique de la Fondation Gacha donne tout son sens à cette parenthèse paisible. Je recommande vivement le restaurant Jacaranda.",
-			author: "Marie L.",
-			role: "Voyageuse en solo",
-			rating: 5
+			text: "J'avais besoin de m'éloigner de la ville et de me ressourcer. Après une semaine ici, je suis heureux de ce choix. La Villa est grande et paisible. Le personnel était serviable et accommodant. La nourriture était excellente et la Fondation Gacha juste à côté offre une dimension culturelle rare qu'on ne trouve nulle part ailleurs. Je reviendrai.",
+			author: "Kevin M.",
+			role: "COO d'une startup tech — TripAdvisor ✓",
+			avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop"
 		},
 		{
 			id: 2,
-			text: "Le mélange parfait entre le confort moderne et la richesse de l'artisanat bamiléké. La vue depuis notre suite familiale au réveil était époustouflante. Un vrai havre de paix.",
-			author: "Famille Dubois",
-			role: "Séjour en famille",
-			rating: 5
-		},
-		{
-			id: 3,
-			text: "L'accueil chaleureux, la qualité exceptionnelle de la literie et le calme absolu font de la Villa Boutanga le meilleur endroit pour se ressourcer à Bangoulap. Le petit-déjeuner local est fantastique.",
-			author: "Alain T.",
-			role: "Voyage d'affaires",
-			rating: 5
+			text: "Un séjour absolument magique. L'architecture respecte les traditions locales tout en offrant un confort irréprochable. Se réveiller avec la vue sur les collines du Ndé n'a pas de prix. Le restaurant est également une très belle découverte avec ses produits du potager.",
+			author: "Sophie T.",
+			role: "Voyageuse — Booking.com ✓",
+			avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop"
 		}
 	];
 
-	// Gestion de l'état du slider avec les runes Svelte 5
-	let currentIndex = $state(0);
-
+	// Fonctions de navigation
 	function nextSlide() {
-		currentIndex = (currentIndex + 1) % testimonials.length;
+		currentIndex = (currentIndex + 1) % reviews.length;
 	}
 
 	function prevSlide() {
-		currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
-	}
-
-	function goToSlide(index: number) {
-		currentIndex = index;
+		currentIndex = (currentIndex - 1 + reviews.length) % reviews.length;
 	}
 </script>
 
-<section id="temoignages" class="py-24 bg-vb-ivory overflow-hidden">
-	<div class="max-w-[1100px] w-full mx-auto px-4 relative">
+<section class="py-24 bg-vb-ivory overflow-hidden">
+	<div class="max-w-[1100px] w-full mx-auto px-4">
 		
-		<div class="text-center mb-16">
-			<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 block">
-				Livre d'Or
-			</span>
-			<h2 class="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-vb-green leading-[1.2]">
-				Ce que disent nos clients
-			</h2>
-		</div>
-
-		<div class="relative max-w-4xl mx-auto">
+		<div class="grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-16 md:gap-20 items-center">
 			
-			<div class="overflow-hidden rounded-[12px] px-2 py-4">
+			<div>
+				<h2 class="font-serif text-[clamp(2.2rem,4vw,3rem)] font-bold text-vb-dark leading-[1.2] mb-10">
+					Ce que disent<br />nos clients
+				</h2>
 				
-				<div 
-					class="flex transition-transform duration-500 ease-in-out"
-					style="transform: translateX(-{currentIndex * 100}%);"
-				>
-					{#each testimonials as review}
-						<div class="min-w-full px-2 md:px-4 box-border">
-							<div class="bg-vb-white border border-vb-ivory3 rounded-[12px] p-[2rem] md:p-[2.8rem_3rem] shadow-testi relative flex flex-col items-center text-center">
-								
-								<Quote class="w-12 h-12 text-vb-ivory3/50 absolute top-8 left-8 md:top-10 md:left-12 rotate-180" />
+				<div class="flex -space-x-4">
+					<img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop" alt="Client 1" class="w-14 h-14 rounded-full border-[3px] border-vb-ivory object-cover relative z-3" />
+					<img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&auto=format&fit=crop" alt="Client 2" class="w-14 h-14 rounded-full border-[3px] border-vb-ivory object-cover relative z-2" />
+					<img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop" alt="Client 3" class="w-14 h-14 rounded-full border-[3px] border-vb-ivory object-cover relative z-1" />
+					
+					<div class="w-14 h-14 rounded-full border-[3px] border-vb-ivory bg-vb-green text-vb-white flex items-center justify-center font-sans text-[0.8rem] font-bold relative z-0">
+						+10
+					</div>
+				</div>
+			</div>
 
-								<div class="flex gap-1 mb-6 mt-4 md:mt-0 relative z-10">
-									{#each Array(review.rating) as _}
+			<div class="relative w-full">
+				
+				<div class="overflow-hidden">
+					<div 
+						class="flex transition-transform duration-700 ease-in-out"
+						style="transform: translateX(-{currentIndex * 100}%);"
+					>
+						{#each reviews as review}
+							<div class="min-w-full flex flex-col pr-4">
+								
+								<div class="flex gap-1.5 mb-8">
+									{#each Array(5) as _}
 										<Star class="w-5 h-5 text-vb-gold fill-vb-gold" />
 									{/each}
 								</div>
 
-								<p class="font-serif italic text-[1.1rem] md:text-[1.25rem] text-vb-green leading-[1.6] mb-8 max-w-2xl relative z-10">
-									"{review.text}"
+								<p class="font-serif italic text-[1.1rem] md:text-[1.35rem] text-vb-dark leading-[1.8] mb-10 max-w-2xl">
+									« {review.text} »
 								</p>
 
-								<div class="mt-auto">
-									<h4 class="font-sans font-semibold text-[1rem] text-vb-dark tracking-[0.04em]">
-										{review.author}
-									</h4>
-									<span class="font-sans text-[0.85rem] text-vb-slate">
-										{review.role}
-									</span>
+								<div class="flex items-center gap-4 mb-10">
+									<img src={review.avatar} alt={review.author} class="w-12 h-12 rounded-full object-cover shadow-sm" />
+									<div class="flex flex-col">
+										<span class="font-sans font-bold text-[1rem] text-vb-dark">{review.author}</span>
+										<span class="font-sans text-[0.85rem] text-vb-slate">{review.role}</span>
+									</div>
 								</div>
+
 							</div>
-						</div>
-					{/each}
+						{/each}
+					</div>
 				</div>
+
+				<div class="flex gap-4">
+					<button 
+						onclick={prevSlide}
+						class="w-12 h-12 rounded-full border border-vb-ivory3 flex items-center justify-center text-vb-slate hover:text-vb-green hover:border-vb-green hover:bg-vb-white transition-all duration-300 focus:outline-none"
+						aria-label="Témoignage précédent"
+					>
+						<ArrowLeft class="w-5 h-5" strokeWidth={1.5} />
+					</button>
+					<button 
+						onclick={nextSlide}
+						class="w-12 h-12 rounded-full border border-vb-ivory3 flex items-center justify-center text-vb-slate hover:text-vb-green hover:border-vb-green hover:bg-vb-white transition-all duration-300 focus:outline-none"
+						aria-label="Témoignage suivant"
+					>
+						<ArrowRight class="w-5 h-5" strokeWidth={1.5} />
+					</button>
+				</div>
+
 			</div>
 
-			<button 
-				onclick={prevSlide}
-				class="absolute left-0 md:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-vb-white border border-vb-ivory3 rounded-full flex items-center justify-center text-vb-green hover:text-vb-gold hover:border-vb-gold shadow-sm transition-all duration-200 z-20 focus:outline-none"
-				aria-label="Témoignage précédent"
-			>
-				<ChevronLeft class="w-6 h-6" />
-			</button>
-			
-			<button 
-				onclick={nextSlide}
-				class="absolute right-0 md:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-vb-white border border-vb-ivory3 rounded-full flex items-center justify-center text-vb-green hover:text-vb-gold hover:border-vb-gold shadow-sm transition-all duration-200 z-20 focus:outline-none"
-				aria-label="Témoignage suivant"
-			>
-				<ChevronRight class="w-6 h-6" />
-			</button>
-
 		</div>
-
-		<div class="flex justify-center gap-3 mt-8">
-			{#each testimonials as _, index}
-				<button 
-					onclick={() => goToSlide(index)}
-					class="w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none {currentIndex === index ? 'bg-vb-gold scale-125' : 'bg-vb-ivory3 hover:bg-vb-gold/50'}"
-					aria-label={`Aller au témoignage ${index + 1}`}
-				></button>
-			{/each}
-		</div>
-
 	</div>
 </section>

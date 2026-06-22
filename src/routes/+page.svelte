@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Topbar from '$lib/components/Topbar.svelte';
-	import Navbar from '$lib/components/Navbar.svelte';
 	import Hero from '$lib/components/Hero.svelte';
     import About from '$lib/components/About.svelte';
     import Services from '$lib/components/Services.svelte';
@@ -13,45 +11,34 @@
     import InstagramFeed from '$lib/components/InstagramFeed.svelte';
     import NewsLetter from '$lib/components/Newsletter.svelte';
     import Contact from '$lib/components/Contact.svelte';
-    import Footer from '$lib/components/Footer.svelte';
-    import ScrollToTop from '$lib/components/ScrollToTop.svelte';
 </script>
 
 <svelte:head>
 	<title>Accueil | Villa Boutanga</title>
 </svelte:head>
 
-<Topbar />
-<Navbar />
+<Hero />
 
-<main>
-	<Hero />
+<div class="h-16 md:h-24 bg-transparent"></div>
 
-	<div class="h-16 md:h-24 bg-transparent"></div>
+<About />
 
-    <About />
+<Services />
 
-    <Services />
+<Rooms />
 
-    <Rooms />
+<Testimonials />
 
-    <Testimonials />
+<VideoBanner />
 
-    <VideoBanner />
+<Offers />
 
-    <Offers />
+<Restaurant />
 
-    <Restaurant />
+<Activities />
 
-    <Activities />
+<InstagramFeed />
 
-    <InstagramFeed />
+<NewsLetter />
 
-    <NewsLetter />
-
-    <Contact />
-
-    <Footer />
-    
-    <ScrollToTop />
-</main>
+<Contact />

@@ -40,8 +40,9 @@
 
 		<div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6">
 			{#each services as service}
+				{@const Icon = service.icon}
 				<div class="bg-vb-white border border-vb-ivory3 rounded-[8px] p-8 text-center transition-all duration-250 hover:shadow-feature hover:-translate-y-1">
-					<svelte:component this={service.icon} class="w-8 h-8 mx-auto text-vb-gold mb-5" />
+					<Icon class="w-8 h-8 mx-auto text-vb-gold mb-5" />
 					<h3 class="font-serif text-[1.2rem] font-semibold text-vb-green mb-3">
 						{service.title}
 					</h3>

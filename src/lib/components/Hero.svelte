@@ -27,7 +27,7 @@
 		</p>
 
 		<div class="flex justify-center items-center animate-fade-in-up delay-450">
-			<Button href="#hebergements" class="bg-vb-gold text-vb-white font-sans font-semibold text-[0.85rem] tracking-[0.05em] px-10 py-6 rounded-[4px] hover:bg-vb-gold2 shadow-md transition-all duration-200 hover:-translate-y-0.5">
+			<Button href="#hebergements" class="bg-vb-gold text-vb-white font-sans font-semibold text-[0.85rem] tracking-wider px-10 py-6 rounded-[4px] hover:bg-vb-gold2 shadow-md transition-all duration-200 hover:-translate-y-0.5">
 				Découvrir nos chambres
 			</Button>
 		</div>

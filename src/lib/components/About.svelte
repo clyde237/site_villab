@@ -5,7 +5,7 @@
 
 <section id="philosophie" class="pt-[110px] pb-20 px-4 max-w-[1100px] w-full mx-auto">
 	
-	<div class="grid grid-cols-1 md:grid-cols-[1fr_1.05fr] gap-12 md:gap-[5rem] items-center">
+	<div class="grid grid-cols-1 md:grid-cols-[1fr_1.05fr] gap-12 md:gap-20 items-center">
 		
 		<div class="relative w-full h-[500px] md:h-[600px] hidden sm:block">
 			
@@ -72,7 +72,7 @@
 			</div>
 
 			<div>
-				<Button href="#fondation" variant="outline" class="font-sans text-[0.85rem] font-semibold tracking-[0.05em] text-vb-green border-vb-green hover:bg-vb-green hover:text-vb-ivory px-6 py-5 rounded-[4px] transition-all duration-200 flex items-center gap-2 group">
+				<Button href="#fondation" variant="outline" class="font-sans text-[0.85rem] font-semibold tracking-wider text-vb-green border-vb-green hover:bg-vb-green hover:text-vb-ivory px-6 py-5 rounded-[4px] transition-all duration-200 flex items-center gap-2 group">
 					Découvrir la fondation
 					<ArrowRight class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
 				</Button>

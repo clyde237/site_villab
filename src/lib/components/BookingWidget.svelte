@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <Button type="submit" class="w-full bg-vb-gold text-vb-white font-sans font-semibold text-[0.85rem] tracking-[0.05em] py-6 rounded-[4px] hover:bg-vb-gold2 shadow-sm transition-all duration-200">
+        <Button type="submit" class="w-full bg-vb-gold text-vb-white font-sans font-semibold text-[0.85rem] tracking-wider py-6 rounded-[4px] hover:bg-vb-gold2 shadow-sm transition-all duration-200">
             Rechercher
         </Button>
     </form>
