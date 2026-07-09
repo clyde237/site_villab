@@ -2,6 +2,9 @@
 	// Import du composant spécifique depuis le nouveau sous-dossier
 	import Banner from '$lib/components/heb/Banner.svelte';
 	import RoomGrid from '$lib/components/heb/RoomGrid.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -14,4 +17,4 @@
 
 <Banner />
 
-<RoomGrid />
+<RoomGrid rooms={data.rooms} />

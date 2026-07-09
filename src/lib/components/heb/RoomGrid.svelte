@@ -1,64 +1,17 @@
 <script lang="ts">
 	import { Maximize, User, ArrowRight } from '@lucide/svelte';
 
-	// Structure des données (prête pour une future API)
-	const rooms = [
-		{
-			id: 1,
-			name: 'Chambre Standard Simple',
-			badge: 'Standard',
-			badgeColor: 'bg-vb-gold', // Couleur dorée
-			image: 'images/IMG8.webp',
-			area: '24 m²',
-			capacity: '1 pers.',
-			amenities: ['Lit Queen', 'Wi-Fi', 'Bureau'],
-			price: '26 000'
-		},
-		{
-			id: 2,
-			name: 'Chambre Standard Double',
-			badge: 'Standard',
-			badgeColor: 'bg-vb-gold',
-			image: 'images/IMG10.webp',
-			area: '28 m²',
-			capacity: '2 pers.',
-			amenities: ['Lit Queen', 'Vue jardin', 'Wi-Fi'],
-			price: '26 000'
-		},
-		{
-			id: 3,
-			name: 'Suite Junior',
-			badge: 'Suite Junior',
-			badgeColor: 'bg-vb-gold',
-			image: 'images/IMG11.webp',
-			area: '45 m²',
-			capacity: '2-3 pers.',
-			amenities: ['Coin salon', 'Vue collines', 'Wi-Fi'],
-			price: '45 000'
-		},
-		{
-			id: 4,
-			name: 'Suite Junior Terrasse',
-			badge: 'Éco-Premium',
-			badgeColor: 'bg-vb-green', // Couleur verte comme sur ta maquette
-			image: 'images/IMG12.webp',
-			area: '50 m²',
-			capacity: '2 pers.',
-			amenities: ['Terrasse privée', 'Lit King', 'Spa'],
-			price: '55 000'
-		},
-		{
-			id: 5,
-			name: 'Suite Familiale',
-			badge: 'Prestige',
-			badgeColor: 'bg-vb-gold',
-			image: 'images/IMG16.webp',
-			area: '65 m²',
-			capacity: '4 pers.',
-			amenities: ['2 Chambres', 'Salon', 'Balcon'],
-			price: '85 000'
-		}
-	];
+	interface Room {
+		id: number;
+		name: string;
+		image: string;
+		area: string | null;
+		capacity: string;
+		amenities: string[];
+		price: string;
+	}
+
+	let { rooms = [] }: { rooms: Room[] } = $props();
 </script>
 
 <section class="py-20 bg-vb-white">
@@ -75,40 +28,44 @@
 			</p>
 		</div>
 
+		{#if rooms.length === 0}
+			<div class="text-center py-16">
+				<p class="font-sans text-vb-slate text-[0.95rem]">Aucune chambre disponible pour le moment. Revenez bientôt !</p>
+			</div>
+		{/if}
+
 		<!-- Grille Responsive : 1 col (mobile) -> 2 cols (tablette) -> 3 cols (petit écran) -> 4 cols (grand écran) -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-			
+
 			{#each rooms as room}
 				<!-- Carte de la chambre -->
 				<div class="group bg-vb-white border border-vb-ivory3 rounded-[12px] overflow-hidden flex flex-col transition-all duration-300 hover:shadow-room hover:-translate-y-1">
-					
-					<!-- Image & Badge -->
+
+					<!-- Image -->
 					<div class="relative h-[220px] overflow-hidden">
-						<img 
-							src={room.image} 
-							alt={room.name} 
+						<img
+							src={room.image}
+							alt={room.name}
 							class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 						/>
-						<!-- Badge dynamique selon la catégorie -->
-						<div class="{room.badgeColor} absolute top-3 left-3 text-vb-white text-[0.65rem] font-bold tracking-[0.08em] uppercase px-[0.6rem] py-1 rounded-[4px] shadow-sm">
-							{room.badge}
-						</div>
 					</div>
 
 					<!-- Corps de la carte -->
 					<div class="p-6 flex flex-col grow">
-						
+
 						<!-- Titre de la chambre -->
 						<h3 class="font-serif text-[1.25rem] font-semibold text-vb-green mb-3 leading-tight">
 							{room.name}
 						</h3>
-						
+
 						<!-- Méta informations (Surface & Capacité) -->
 						<div class="flex items-center gap-5 mb-4">
-							<div class="flex items-center gap-1.5 text-vb-slate">
-								<Maximize class="w-4 h-4 text-vb-slate/70" />
-								<span class="font-sans text-[0.85rem]">{room.area}</span>
-							</div>
+							{#if room.area}
+								<div class="flex items-center gap-1.5 text-vb-slate">
+									<Maximize class="w-4 h-4 text-vb-slate/70" />
+									<span class="font-sans text-[0.85rem]">{room.area}</span>
+								</div>
+							{/if}
 							<div class="flex items-center gap-1.5 text-vb-slate">
 								<User class="w-4 h-4 text-vb-slate/70" />
 								<span class="font-sans text-[0.85rem]">{room.capacity}</span>

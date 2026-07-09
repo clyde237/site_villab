@@ -1,75 +1,23 @@
 <script lang="ts">
-	// Données du menu (simulées pour l'exemple)
-	const menuData = [
-		{
-			category: 'Spécialités Camerounaises',
-			items: [
-				{
-					id: 1,
-					name: 'Ndolé Traditionnel',
-					desc: 'Feuilles de ndolé, crevettes fumées, pistaches et viande mijotée. Servi avec du plantain.',
-					price: '4 500',
-					image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=200&auto=format&fit=crop'
-				},
-				{
-					id: 2,
-					name: 'Mbongo Tchobi',
-					desc: 'Poisson ou poulet mijoté dans une sauce noire aux épices traditionnelles bamilékées.',
-					price: '5 000',
-					image: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=200&auto=format&fit=crop'
-				},
-				{
-					id: 3,
-					name: 'Sauce Pistache',
-					desc: 'Mets de pistache grillée préparé selon la recette ancestrale, servi avec riz ou couscous.',
-					price: '4 000',
-					image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop'
-				},
-				{
-					id: 4,
-					name: 'Légumes du Potager',
-					desc: 'Assortiment de légumes de saison du potager biologique, grillés aux herbes aromatiques.',
-					price: '2 500',
-					image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=200&auto=format&fit=crop'
-				},
-				{
-					id: 5,
-					name: 'Poulet DG',
-					desc: 'Poulet sauté aux légumes frais, banane plantain, tomates et épices locales du Ndé.',
-					price: '5 500',
-					image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=200&auto=format&fit=crop'
-				},
-				{
-					id: 6,
-					name: 'Eru & Waterleaf',
-					desc: "Feuilles d'eru mijotées à l'huile de palme rouge avec du waterleaf et des crevettes.",
-					price: '4 200',
-					image: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=200&auto=format&fit=crop'
-				}
-			]
-		},
-		{
-			category: 'Entrées & Salades',
-			items: [
-				{
-					id: 7,
-					name: 'Salade de l\'Ouest',
-					desc: 'Tomates du potager, avocats, oignons, et vinaigrette maison.',
-					price: '2 000',
-					image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=200&auto=format&fit=crop'
-				}
-			]
-		},
-		{ category: 'Cuisine Conviviale', items: [] },
-		{ category: 'Bar & Boissons', items: [] },
-		{ category: 'Desserts', items: [] }
-	];
+	interface MenuItem {
+		id: number;
+		name: string;
+		desc: string | null;
+		price: string;
+		image: string | null;
+	}
+	interface MenuCategory {
+		category: string;
+		items: MenuItem[];
+	}
+
+	let { categories = [] }: { categories: MenuCategory[] } = $props();
 
 	// Gestion de l'état des onglets avec Svelte 5
-	let activeCategory = $state(menuData[0].category);
+	let activeCategory = $state(categories[0]?.category ?? '');
 
 	// Filtrage réactif des éléments à afficher
-	let currentItems = $derived(menuData.find((c) => c.category === activeCategory)?.items || []);
+	let currentItems = $derived(categories.find((c) => c.category === activeCategory)?.items || []);
 </script>
 
 <section id="menu" class="py-24 bg-vb-white">
@@ -96,7 +44,7 @@
 		<!-- Système d'Onglets (Tabs) -->
 		<div class="mb-10 border-b border-vb-ivory3 overflow-x-auto hide-scrollbar">
 			<div class="flex gap-8 min-w-max px-2">
-				{#each menuData as tab}
+				{#each categories as tab}
 					<button 
 						onclick={() => activeCategory = tab.category}
 						class="pb-4 font-sans text-[0.85rem] font-semibold transition-colors duration-200 border-b-2 {activeCategory === tab.category ? 'text-vb-dark border-vb-gold' : 'text-vb-slate border-transparent hover:text-vb-dark'}"
@@ -115,9 +63,9 @@
 					<div class="flex items-center gap-5 p-4 border border-vb-ivory3 rounded-[12px] bg-vb-white hover:border-vb-gold/50 transition-colors duration-300 group">
 						
 						<!-- Image miniature -->
-						<img 
-							src={item.image} 
-							alt={item.name} 
+						<img
+							src={item.image ?? '/images/IMG1.webp'}
+							alt={item.name}
 							class="w-[70px] h-[70px] rounded-[8px] object-cover shrink-0"
 						/>
 						

@@ -11,13 +11,19 @@
     import InstagramFeed from '$lib/components/InstagramFeed.svelte';
     import NewsLetter from '$lib/components/Newsletter.svelte';
     import Contact from '$lib/components/Contact.svelte';
+    import type { PageData } from './$types';
+
+    let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
-	<title>Accueil | Villa Boutanga</title>
+	<title>{data.content?.seo.title ?? 'Accueil | Villa Boutanga'}</title>
+	{#if data.content?.seo.description}
+		<meta name="description" content={data.content.seo.description} />
+	{/if}
 </svelte:head>
 
-<Hero />
+<Hero content={data.content} />
 
 <div class="h-16 md:h-24 bg-transparent"></div>
 

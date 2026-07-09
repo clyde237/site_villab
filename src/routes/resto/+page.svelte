@@ -6,6 +6,9 @@
     import Menu from '$lib/components/resto/Menu.svelte';
     import Testimonials from '$lib/components/Testimonials.svelte';
     import Newsletter from '$lib/components/Newsletter.svelte';
+    import type { PageData } from './$types';
+
+    let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -22,7 +25,7 @@
 
 <Gallery />
 
-<Menu />
+<Menu categories={data.menuCategories} />
 
 <Testimonials />
 
