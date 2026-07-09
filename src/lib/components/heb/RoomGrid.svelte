@@ -91,7 +91,7 @@
 								<span class="font-sans text-[0.7rem] text-vb-slate uppercase tracking-wider">FCFA/nuit</span>
 							</div>
 							
-							<a href="/heb/room/" class="font-sans text-[0.85rem] font-semibold text-vb-gold flex items-center gap-1.5 hover:text-vb-green transition-colors group/link">
+							<a href="/heb/room/{room.id}" class="font-sans text-[0.85rem] font-semibold text-vb-gold flex items-center gap-1.5 hover:text-vb-green transition-colors group/link">
 								Découvrir
 								<ArrowRight class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform" />
 							</a>
