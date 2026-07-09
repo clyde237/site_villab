@@ -60,7 +60,7 @@
 					Charme & Confort
 				</h2>
 			</div>
-			<a href="#hebergements" class="font-sans text-[0.85rem] font-semibold tracking-[0.05em] text-vb-green flex items-center gap-2 hover:text-vb-gold transition-colors group">
+			<a href="#hebergements" class="font-sans text-[0.85rem] font-semibold tracking-wider text-vb-green flex items-center gap-2 hover:text-vb-gold transition-colors group">
 				Voir toutes nos chambres
 				<ArrowRight class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
 			</a>
@@ -68,7 +68,7 @@
 
 		<div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8">
 			{#each rooms as room}
-				<div class="group bg-vb-white border border-vb-ivory3 rounded-[12px] overflow-hidden flex flex-col transition-all duration-300 hover:shadow-room hover:-translate-y-[5px]">
+				<div class="group bg-vb-white border border-vb-ivory3 rounded-[12px] overflow-hidden flex flex-col transition-all duration-300 hover:shadow-room hover:translate-y-[5px]">
 					
 					<div class="relative h-[240px] overflow-hidden">
 						<img 
@@ -76,24 +76,25 @@
 							alt={room.name} 
 							class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 						/>
-						<div class="absolute top-4 left-4 bg-vb-gold text-vb-white text-[0.68rem] font-bold tracking-[0.07em] uppercase px-[0.75rem] py-[0.28rem] rounded-[4px] shadow-sm">
+						<div class="absolute top-4 left-4 bg-vb-gold text-vb-white text-[0.68rem] font-bold tracking-[0.07em] uppercase px-3 py-[0.28rem] rounded-[4px] shadow-sm">
 							{room.badge}
 						</div>
 					</div>
 
-					<div class="p-7 flex flex-col flex-grow">
+					<div class="p-7 flex flex-col grow">
 						<h3 class="font-serif text-[1.4rem] font-semibold text-vb-green mb-3 leading-[1.3]">
 							{room.name}
 						</h3>
 						
-						<p class="font-sans text-[0.95rem] text-vb-slate leading-[1.6] mb-6 flex-grow">
+						<p class="font-sans text-[0.95rem] text-vb-slate leading-[1.6] mb-6 grow">
 							{room.description}
 						</p>
 
 						<div class="grid grid-cols-2 gap-y-3 mb-6">
 							{#each room.features as feature}
+								{@const Icon = feature.icon}
 								<div class="flex items-center gap-2 text-vb-slate2 font-sans text-[0.85rem]">
-									<svelte:component this={feature.icon} class="w-4 h-4 text-vb-gold/80" />
+									<Icon class="w-4 h-4 text-vb-gold/80" />
 									<span>{feature.text}</span>
 								</div>
 							{/each}
@@ -107,7 +108,7 @@
 								</div>
 							</div>
 							
-							<a href="#contact" class="font-sans font-semibold text-[0.78rem] text-vb-green border-[1.5px] border-vb-green px-[1.1rem] py-[0.5rem] rounded-[4px] hover:bg-vb-green hover:text-vb-ivory transition-colors duration-200">
+							<a href="#contact" class="font-sans font-semibold text-[0.78rem] text-vb-green border-[1.5px] border-vb-green px-[1.1rem] py-2 rounded-[4px] hover:bg-vb-green hover:text-vb-ivory transition-colors duration-200">
 								Réserver
 							</a>
 						</div>

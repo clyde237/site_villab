@@ -30,7 +30,7 @@
 			<div class="flex flex-col justify-center">
 				<!-- Eyebrow -->
 				<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 flex items-center gap-4">
-					<span class="w-6 h-[1px] bg-vb-gold"></span>
+					<span class="w-6 h-px bg-vb-gold"></span>
 					Nous Contacter
 				</span>
 				
@@ -70,7 +70,7 @@
 				</div>
 
 				<!-- Badge Altitude -->
-				<div class="bg-vb-white border-l-[4px] border-vb-gold p-5 rounded-r-[8px] shadow-sm">
+				<div class="bg-vb-white border-l-4 border-vb-gold p-5 rounded-r-[8px] shadow-sm">
 					<div class="flex items-center gap-2 mb-1">
 						<Mountain class="w-5 h-5 text-vb-gold" strokeWidth={2} />
 						<span class="font-sans font-bold text-[1rem] text-vb-dark">Altitude : 1 500 m</span>
@@ -141,7 +141,7 @@
 
 					<!-- Bouton d'envoi -->
 					<div class="mt-2">
-						<button type="submit" class="bg-vb-green hover:bg-vb-green2 text-vb-white font-sans font-semibold text-[0.9rem] tracking-[0.05em] px-[1.8rem] py-[0.9rem] rounded-[4px] transition-all duration-200 flex items-center justify-center gap-2 group">
+						<button type="submit" class="bg-vb-green hover:bg-vb-green2 text-vb-white font-sans font-semibold text-[0.9rem] tracking-wider px-[1.8rem] py-[0.9rem] rounded-[4px] transition-all duration-200 flex items-center justify-center gap-2 group">
 							Envoyer ma demande
 							<ArrowRight class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
 						</button>

@@ -32,9 +32,9 @@
 		<div class="text-center mb-16">
 			<!-- Eyebrow -->
 			<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 flex items-center justify-center gap-4">
-				<span class="w-8 h-[1px] bg-vb-gold"></span>
+				<span class="w-8 h-px bg-vb-gold"></span>
 				Découvertes
-				<span class="w-8 h-[1px] bg-vb-gold"></span>
+				<span class="w-8 h-px bg-vb-gold"></span>
 			</span>
 			
 			<!-- Titre -->
@@ -59,7 +59,7 @@
 					</div>
 
 					<!-- Corps de la carte (Padding 1.6rem selon le Design System) -->
-					<div class="p-[1.6rem] flex flex-col flex-grow">
+					<div class="p-[1.6rem] flex flex-col grow">
 						<!-- Catégorie / Label (Jost, 0.68rem, 600, uppercase, tracking 0.08em) -->
 						<span class="font-sans text-[0.68rem] font-semibold tracking-[0.08em] uppercase text-vb-gold mb-2 block">
 							{activity.category}
@@ -71,7 +71,7 @@
 						</h3>
 						
 						<!-- Description -->
-						<p class="font-sans text-[0.95rem] text-vb-slate leading-[1.6] flex-grow">
+						<p class="font-sans text-[0.95rem] text-vb-slate leading-[1.6] grow">
 							{activity.description}
 						</p>
 					</div>

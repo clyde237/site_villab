@@ -15,9 +15,9 @@
 		
 		<!-- Eyebrow -->
 		<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 flex items-center justify-center gap-4">
-			<span class="w-6 h-[1px] bg-vb-gold"></span>
+			<span class="w-6 h-px bg-vb-gold"></span>
 			Offres Exclusives
-			<span class="w-6 h-[1px] bg-vb-gold"></span>
+			<span class="w-6 h-px bg-vb-gold"></span>
 		</span>
 		
 		<!-- Titre (Playfair, texte Ivoire selon le Design System) -->
@@ -35,14 +35,14 @@
 				type="email" 
 				bind:value={email}
 				placeholder="Votre adresse e-mail" 
-				class="flex-grow font-sans text-[0.9rem] px-[1rem] py-[0.9rem] border-none focus:outline-none text-vb-dark bg-vb-white m-0"
+				class="grow font-sans text-[0.9rem] px-4 py-[0.9rem] border-none focus:outline-none text-vb-dark bg-vb-white m-0"
 				required
 			/>
 			
 			<!-- Bouton S'abonner (Jost 700, padding et hover spécifiques) -->
 			<button 
 				type="submit" 
-				class="bg-vb-gold hover:bg-vb-gold2 text-vb-white font-sans font-bold text-[0.92rem] tracking-[0.05em] px-[1.6rem] py-[0.9rem] transition-colors duration-200 m-0 shrink-0"
+				class="bg-vb-gold hover:bg-vb-gold2 text-vb-white font-sans font-bold text-[0.92rem] tracking-wider px-[1.6rem] py-[0.9rem] transition-colors duration-200 m-0 shrink-0"
 			>
 				S'abonner
 			</button>

@@ -14,7 +14,7 @@
 			<div>
 				<!-- Eyebrow -->
 				<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 flex items-center gap-4">
-					<span class="w-6 h-[1px] bg-vb-gold"></span>
+					<span class="w-6 h-px bg-vb-gold"></span>
 					Restauration
 				</span>
 				

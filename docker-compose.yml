@@ -1,0 +1,12 @@
+# Compose autonome pour tester le Dockerfile en local — PAS le mécanisme
+# utilisé en production (pms génère son propre docker-compose par
+# établissement, avec les hostnames internes réels de CMS_API_URL/TENANT_API_URL).
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      TENANT_SLUG: weloobe
+      CMS_API_URL: http://host.docker.internal:8080
+      TENANT_API_URL: http://host.docker.internal:8092

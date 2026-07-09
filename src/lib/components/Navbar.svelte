@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Leaf } from '@lucide/svelte';
+	import { page } from '$app/stores';
 </script>
 
 <header class="sticky top-0 z-50 bg-vb-white h-[64px] flex items-center border-b border-vb-ivory3 shadow-nav">
@@ -10,16 +10,49 @@
 		</a>
 
 		<nav class="hidden md:flex items-center gap-8 font-sans text-[0.8rem] font-medium tracking-[0.06em] uppercase">
-			<a href="#accueil" class="text-vb-gold transition-colors">Accueil</a>
-			<a href="#hebergements" class="text-vb-dark hover:text-vb-gold transition-colors">Hébergements</a>
-			<a href="#restauration" class="text-vb-dark hover:text-vb-gold transition-colors">Restauration</a>
-			<a href="#fondation" class="text-vb-dark hover:text-vb-gold transition-colors">La Fondation</a>
-			<a href="#activites" class="text-vb-dark hover:text-vb-gold transition-colors">Activités</a>
-			<a href="#contact" class="text-vb-dark hover:text-vb-gold transition-colors">Contact</a>
+			<a 
+				href={$page.url.pathname === '/' ? '#accueil' : '/'} 
+				class="transition-colors {$page.url.pathname === '/' ? 'text-vb-gold' : 'text-vb-dark hover:text-vb-gold'}"
+			>
+				Accueil
+			</a>
+			<a 
+				href="/heb" 
+				class="transition-colors {$page.url.pathname.startsWith('/heb') ? 'text-vb-gold' : 'text-vb-dark hover:text-vb-gold'}"
+			>
+				Hébergements
+			</a>
+			<a 
+				href={$page.url.pathname === '/resto' ? '/resto' : '/resto'} 
+				class="transition-colors text-vb-dark hover:text-vb-gold"
+			>
+				Restauration
+			</a>
+			<a 
+				href="/about" 
+				class="transition-colors {$page.url.pathname.startsWith('/about') ? 'text-vb-gold' : 'text-vb-dark hover:text-vb-gold'}"
+			>
+				A propos
+			</a>
+			<a 
+				href={$page.url.pathname === '/' ? '#activites' : '/#activites'} 
+				class="transition-colors text-vb-dark hover:text-vb-gold"
+			>
+				Activités
+			</a>
+			<a 
+				href={$page.url.pathname === '/' ? '/contact' : '/#contact'} 
+				class="transition-colors text-vb-dark hover:text-vb-gold"
+			>
+				Contact
+			</a>
 		</nav>
 
 		<div class="flex items-center">
-			<a href="#contact" class="font-sans text-[0.8rem] font-semibold tracking-[0.04em] text-vb-white border bg-vb-gold2 px-4 py-2 rounded-[4px] hover:bg-vb-green hover:text-vb-ivory transition-all duration-200">
+			<a 
+				href={$page.url.pathname === '/' ? '/heb' : '/heb'} 
+				class="font-sans text-[0.8rem] font-semibold tracking-[0.04em] text-vb-white border bg-vb-gold2 px-4 py-2 rounded-[4px] hover:bg-vb-green hover:text-vb-ivory transition-all duration-200"
+			>
 				Reserver
 			</a>
 		</div>
