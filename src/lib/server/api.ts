@@ -46,3 +46,26 @@ export function fetchCmsContent<T>(path: string, fetchFn: typeof fetch): Promise
 export function fetchTenantApi<T>(path: string, fetchFn: typeof fetch): Promise<T | null> {
 	return fetchJson<T>(env.TENANT_API_URL, `/api/v1${path}`, fetchFn);
 }
+
+/**
+ * Vérifie que l'application de l'établissement (meka_template) répond —
+ * pilote l'indicateur vert/rouge de la topbar. Timeout court pour ne pas
+ * ralentir le rendu des pages quand l'application est injoignable.
+ *
+ * Retourne null quand TENANT_API_URL n'est pas configurée (dev local sans
+ * API) : le site est en mode démo, l'indicateur reste vert.
+ */
+export async function pingTenantApi(fetchFn: typeof fetch): Promise<boolean | null> {
+	if (!env.TENANT_API_URL) {
+		return null;
+	}
+
+	try {
+		const response = await fetchFn(`${env.TENANT_API_URL}/api/v1/ping`, {
+			signal: AbortSignal.timeout(2000)
+		});
+		return response.ok;
+	} catch {
+		return false;
+	}
+}
