@@ -1,9 +1,15 @@
 import type { LayoutServerLoad } from './$types';
-import { fetchCmsContent } from '$lib/server/api';
+import { fetchCmsContent, pingTenantApi } from '$lib/server/api';
 import type { CmsContent } from '$lib/types/api';
 
 export const load: LayoutServerLoad = async ({ fetch }) => {
-	const content = await fetchCmsContent<CmsContent>('/content', fetch);
+	// Contenu CMS (pms) et état de la liaison avec l'application de
+	// l'établissement (meka_template) — en parallèle, le ping ne doit pas
+	// retarder le contenu.
+	const [content, apiOnline] = await Promise.all([
+		fetchCmsContent<CmsContent>('/content', fetch),
+		pingTenantApi(fetch)
+	]);
 
-	return { content };
+	return { content, apiOnline };
 };

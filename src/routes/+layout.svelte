@@ -18,7 +18,7 @@
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
-	<Topbar content={data.content} />
+	<Topbar content={data.content} apiOnline={data.apiOnline} />
 	<Navbar content={data.content} />
 
 	<main class="grow">
