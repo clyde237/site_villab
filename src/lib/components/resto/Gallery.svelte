@@ -1,37 +1,26 @@
 <script lang="ts">
-	// Tableau des images avec une propriété "class" pour gérer la largeur (span)
-	const galleryImages = [
-		{ 
-			id: 1, 
-			src: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop', 
-			alt: 'Plat traditionnel revisité',
-			spanClass: 'col-span-1 md:col-span-1'
-		},
-		{ 
-			id: 2, 
-			src: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?q=80&w=800&auto=format&fit=crop', 
-			alt: 'Gâteau aux framboises',
-			spanClass: 'col-span-1 md:col-span-1'
-		},
-		{ 
-			id: 3, 
-			src: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop', 
-			alt: 'Salade saine et colorée',
-			spanClass: 'col-span-1 md:col-span-1 lg:col-span-1'
-		},
-		{ 
-			id: 4, 
-			src: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=1200&auto=format&fit=crop', 
-			alt: 'Pancakes au sirop',
-			spanClass: 'col-span-1 md:col-span-2 lg:col-span-2' // S'étend sur 2 colonnes
-		},
-		{ 
-			id: 5, 
-			src: 'https://images.unsplash.com/photo-1555126634-323283e090fa?q=80&w=800&auto=format&fit=crop', 
-			alt: 'Plat asiatique',
-			spanClass: 'col-span-1 md:col-span-1'
-		}
+	import type { GallerySection } from '$lib/types/api';
+
+	let { section = null }: { section?: GallerySection | null } = $props();
+
+	const defaultImages = [
+		'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1565958011703-44f9829ba187?q=80&w=800&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=1200&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1555126634-323283e090fa?q=80&w=800&auto=format&fit=crop'
 	];
+
+	// Photos importées dans pms (page Restaurant > Galerie), repli sur les
+	// images de démonstration. Une image sur 4 s'étend sur 2 colonnes pour
+	// conserver le rythme visuel de la mosaïque.
+	const galleryImages = $derived(
+		(section?.images?.length ? section.images : defaultImages).map((src, i) => ({
+			src,
+			alt: `Photo du restaurant ${i + 1}`,
+			spanClass: i % 4 === 3 ? 'col-span-1 md:col-span-2 lg:col-span-2' : 'col-span-1 md:col-span-1'
+		}))
+	);
 </script>
 
 <!-- Fond Ivoire clair pour la section -->

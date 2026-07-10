@@ -1,39 +1,46 @@
 <script lang="ts">
 	import { BedDouble, ShieldCheck, Utensils, Trees, Palette, Wifi } from '@lucide/svelte';
+	import type { FacilitiesSection } from '$lib/types/api';
 
-	// Les 6 équipements pour former notre grille 2x3
-	const facilities = [
+	let { section = null }: { section?: FacilitiesSection | null } = $props();
+
+	const title = $derived(section?.title ?? 'Équipements & Installations');
+
+	const defaultFacilities = [
 		{
-			icon: BedDouble,
 			title: 'Chambres & Suites',
 			desc: "14 chambres décorées d'artisanat bamiléké, alliant confort moderne et authenticité locale."
 		},
 		{
-			icon: ShieldCheck,
 			title: 'Sécurité 24h/24',
 			desc: 'Personnel dédié et cadre sécurisé pour votre tranquillité tout au long du séjour.'
 		},
 		{
-			icon: Utensils,
 			title: 'Restaurant Le Jacaranda',
 			desc: 'Terrasse panoramique, cuisine du potager biologique et spécialités camerounaises.'
 		},
 		{
-			icon: Trees,
 			title: 'Potager & Espaces Verts',
 			desc: 'Jardins biologiques, sentiers de promenade et vue imprenable sur le grassland.'
 		},
 		{
-			icon: Palette,
 			title: 'Centre Culturel Gacha',
 			desc: "Ateliers d'artisanat, expositions d'art africain et bibliothèque communautaire."
 		},
 		{
-			icon: Wifi,
 			title: 'Wi-Fi & Services',
 			desc: 'Connexion internet gratuite, parking sécurisé et service de conciergerie.'
 		}
 	];
+
+	// Installations saisies dans pms avec icônes attribuées en boucle,
+	// repli sur les 6 installations statiques du template.
+	const facilityIcons = [BedDouble, ShieldCheck, Utensils, Trees, Palette, Wifi];
+	const facilities = $derived(
+		section?.items?.length
+			? section.items.map((item) => ({ title: item.title ?? '', desc: item.description ?? '' }))
+			: defaultFacilities
+	);
 </script>
 
 <section class="py-24 bg-vb-ivory">
@@ -44,7 +51,7 @@
 			<div>
 				<div class="mb-10 text-center lg:text-left">
 					<h2 class="font-serif text-[clamp(2rem,3vw,2.5rem)] font-bold text-vb-green leading-[1.2] mb-4">
-						Équipements<br />& Installations
+						{title}
 					</h2>
 					<p class="font-sans text-[0.95rem] text-vb-slate leading-relaxed max-w-lg mx-auto lg:mx-0">
 						Un cadre soigneusement pensé pour que chaque moment de votre séjour soit synonyme de confort, de découverte et de bien-être.
@@ -52,8 +59,8 @@
 				</div>
 
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-					{#each facilities as item}
-						{@const Icon = item.icon}
+					{#each facilities as item, i}
+						{@const Icon = facilityIcons[i % facilityIcons.length]}
 						<div class="bg-vb-white border border-vb-ivory3 rounded-[8px] p-5 flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-sm">
 							<div class="w-10 h-10 rounded-full bg-vb-ivory border border-vb-ivory2 flex items-center justify-center mb-3 shrink-0">
 								<Icon class="w-5 h-5 text-vb-gold" />

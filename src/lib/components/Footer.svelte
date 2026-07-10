@@ -1,6 +1,21 @@
 <script lang="ts">
 	// Nous ne gardons que les icônes standards de Lucide
 	import { Phone, Mail, MapPin } from '@lucide/svelte';
+	import type { CmsContent } from '$lib/types/api';
+
+	let { content = null }: { content?: CmsContent | null } = $props();
+
+	// Identité et coordonnées de l'établissement (création dans pms),
+	// repli sur le contenu statique du template.
+	const name = $derived(content?.name ?? 'Villa Boutanga');
+	const phone = $derived(content?.contact?.phone ?? '+237 6 95 85 60 95');
+	const email = $derived(content?.contact?.email ?? 'contact@villaboutanga.cm');
+	const address = $derived(content?.contact?.address ?? 'Village Bangoulap, Bangangté, Ouest Cameroun');
+	const nameParts = $derived.by(() => {
+		const idx = name.indexOf(' ');
+		return idx === -1 ? { first: name, rest: null } : { first: name.slice(0, idx), rest: name.slice(idx + 1) };
+	});
+	const year = new Date().getFullYear();
 </script>
 
 <footer class="bg-vb-dark pt-20 pb-8 text-vb-ivory/60 border-t border-vb-green/30">
@@ -11,11 +26,11 @@
 			<!-- Colonne 1 : Marque & Description -->
 			<div class="flex flex-col gap-6">
 				<a href="/" class="font-serif text-[1.5rem] font-semibold text-vb-white tracking-[0.04em] flex items-center gap-2 select-none">
-					<span>Villa <span class="text-vb-gold">Boutanga</span></span>
+					<span>{nameParts.first}{#if nameParts.rest} <span class="text-vb-gold">{nameParts.rest}</span>{/if}</span>
 				</a>
-				
+
 				<p class="font-sans text-[0.9rem] leading-[1.7] max-w-sm">
-					Gîte de charme de la Fondation Jean-Félicien Gacha. Bangoulap, Région de l'Ouest, Cameroun — 1 500 m d'altitude.
+					{content?.seo?.description ?? 'Gîte de charme de la Fondation Jean-Félicien Gacha. Bangoulap, Région de l\'Ouest, Cameroun — 1 500 m d\'altitude.'}
 				</p>
 				
 				<!-- Réseaux Sociaux (SVG Natifs) -->
@@ -83,20 +98,20 @@
 				<ul class="flex flex-col gap-4 font-sans text-[0.9rem]">
 					<li class="flex items-start gap-3">
 						<Phone class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
-						<a href="tel:+237695856095" class="hover:text-vb-gold transition-colors duration-200">
-							+237 6 95 85 60 95
+						<a href="tel:{phone.replace(/\s/g, '')}" class="hover:text-vb-gold transition-colors duration-200">
+							{phone}
 						</a>
 					</li>
 					<li class="flex items-start gap-3">
 						<Mail class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
-						<a href="mailto:contact@villaboutanga.cm" class="hover:text-vb-gold transition-colors duration-200 break-all">
-							contact@villaboutanga.cm
+						<a href="mailto:{email}" class="hover:text-vb-gold transition-colors duration-200 break-all">
+							{email}
 						</a>
 					</li>
 					<li class="flex items-start gap-3">
 						<MapPin class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
 						<span class="leading-relaxed">
-							Village Bangoulap,<br />Bangangté, Ouest Cameroun
+							{address}
 						</span>
 					</li>
 				</ul>
@@ -107,7 +122,7 @@
 		<!-- Ligne de séparation et Copyright -->
 		<div class="pt-8 border-t border-vb-ivory/10 flex flex-col md:flex-row items-center justify-between gap-4 font-sans text-[0.8rem]">
 			<p>
-				© 2026 Villa Boutanga — Entité de la Fondation Jean-Félicien Gacha. Tous droits réservés.
+				© {year} {name} — Tous droits réservés.
 			</p>
 			<div class="flex gap-4">
 				<a href="/heb" class="hover:text-vb-gold transition-colors">Réservé</a>

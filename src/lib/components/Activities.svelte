@@ -1,28 +1,50 @@
 <script lang="ts">
-	// Tableau de données pour générer facilement les cartes d'activités
-	const activities = [
+	import type { DiscoverySection } from '$lib/types/api';
+
+	let { section = null }: { section?: DiscoverySection | null } = $props();
+
+	const eyebrow = $derived(section?.subtitle ?? 'Découvertes');
+	const title = $derived(section?.title ?? 'Activités & Région');
+
+	// Images d'ambiance fixes du template, réutilisées en boucle pour les
+	// activités saisies dans pms (le CMS ne gère pas d'image par activité).
+	const activityImages = [
+		'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1523805009056-24da03d002a2?q=80&w=800&auto=format&fit=crop'
+	];
+
+	const defaultActivities = [
 		{
-			id: 1,
 			category: 'Sur place',
 			title: 'Visite de la Fondation',
 			description: "Ateliers d'artisans, expositions d'art africain et Centre Culturel Jean-Louis Dumas.",
-			image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800&auto=format&fit=crop'
+			image: activityImages[0]
 		},
 		{
-			id: 2,
 			category: 'Plein air',
 			title: 'Randonnées Guidées',
 			description: 'Collines sacrées, cascades et paysages du Ndé avec nos guides locaux passionnés.',
-			image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop'
+			image: activityImages[1]
 		},
 		{
-			id: 3,
 			category: 'Culture',
 			title: 'Route des Chefferies',
 			description: "Immersion unique : Chefferie supérieure de Bangoulap et Hautes Terres de l'Ouest.",
-			image: 'https://images.unsplash.com/photo-1523805009056-24da03d002a2?q=80&w=800&auto=format&fit=crop'
+			image: activityImages[2]
 		}
 	];
+
+	const activities = $derived(
+		section?.items?.length
+			? section.items.map((item, i) => ({
+					category: 'Découverte',
+					title: item.title ?? '',
+					description: item.description ?? '',
+					image: activityImages[i % activityImages.length]
+				}))
+			: defaultActivities
+	);
 </script>
 
 <section id="activites" class="py-24 bg-vb-ivory">
@@ -33,13 +55,13 @@
 			<!-- Eyebrow -->
 			<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 flex items-center justify-center gap-4">
 				<span class="w-8 h-px bg-vb-gold"></span>
-				Découvertes
+				{eyebrow}
 				<span class="w-8 h-px bg-vb-gold"></span>
 			</span>
-			
+
 			<!-- Titre -->
 			<h2 class="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-vb-green leading-[1.2]">
-				Activités & Région
+				{title}
 			</h2>
 		</div>
 

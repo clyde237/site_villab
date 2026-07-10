@@ -1,5 +1,15 @@
 <script lang="ts">
 	import { ArrowRight } from '@lucide/svelte';
+	import type { WelcomeSection } from '$lib/types/api';
+
+	let { section = null }: { section?: WelcomeSection | null } = $props();
+
+	const title = $derived(section?.title ?? 'Bienvenue à la Villa Boutanga');
+	const body = $derived(
+		section?.body ??
+			"Perchée à 1 500 m d'altitude sur les hauteurs de Bangoulap, dans le département du Ndé, la Villa Boutanga est un havre de paix éco-responsable niché au cœur du grassland camerounais. Depuis sa création, la Villa est une entité de la Fondation Jean-Félicien Gacha, un pôle d'éducation, de formation et de préservation du patrimoine bamiléké ouvert aux voyageurs du monde entier. Nos 14 chambres de standing allient le charme de l'artisanat local — perlage, tissus traditionnels, menuiserie bamilékée — au confort contemporain."
+	);
+	const mainImage = $derived(section?.image ?? '/images/IMG7.webp');
 </script>
 
 <section class="py-24 bg-vb-white">
@@ -9,15 +19,15 @@
 			
 			<div class="relative w-full h-[550px] md:h-[650px] hidden sm:block">
 				
-				<img 
-					src="images/IMG7.webp" 
-					alt="Paysage montagneux du Ndé" 
+				<img
+					src={mainImage}
+					alt="Vue de l'établissement"
 					class="absolute top-0 right-6 w-[80%] h-[75%] object-cover rounded-[12px]"
 				/>
-				
-				<img 
-					src="images/IMG6.webp" 
-					alt="Vue de la Villa" 
+
+				<img
+					src="/images/IMG6.webp"
+					alt="Vue de la Villa"
 					class="absolute bottom-0 right-0 w-[65%] h-[55%] object-cover rounded-[12px] border-[6px] border-vb-white shadow-[0_8px_32px_rgba(30,58,47,.15)]"
 				/>
 				
@@ -42,16 +52,11 @@
 				</div>
 				
 				<h2 class="font-serif text-[clamp(2rem,3.5vw,2.8rem)] font-bold text-vb-dark leading-[1.2] mb-8">
-					Bienvenue à la<br/>Villa Boutanga
+					{title}
 				</h2>
-				
+
 				<div class="font-sans text-[0.95rem] md:text-[1rem] text-vb-slate leading-[1.7] flex flex-col gap-5 mb-8">
-					<p>
-						Perchée à 1 500 m d'altitude sur les hauteurs de Bangoulap, dans le département du Ndé, la Villa Boutanga est un havre de paix éco-responsable niché au cœur du grassland camerounais. Depuis sa création, la Villa est une entité de la <strong class="text-vb-dark font-medium">Fondation Jean-Félicien Gacha</strong>, un pôle d'éducation, de formation et de préservation du patrimoine bamiléké ouvert aux voyageurs du monde entier.
-					</p>
-					<p>
-						Nos 14 chambres de standing allient le charme de l'artisanat local — perlage, tissus traditionnels, menuiserie bamilékée — au confort contemporain. Chaque nuit passée ici contribue directement au financement des projets éducatifs, culturels et environnementaux menés dans le Ndé.
-					</p>
+					<p>{body}</p>
 				</div>
 				
 				<div class="w-12 h-[2px] bg-vb-gold mb-8"></div>

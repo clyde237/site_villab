@@ -5,16 +5,21 @@
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	const page = $derived(data.content?.pages?.heb ?? null);
+	const show = (section?: { enabled: boolean } | null) => section?.enabled ?? true;
 </script>
 
 <svelte:head>
-	<title>Nos Hébergements | Villa Boutanga</title>
-	<meta name="description" content="Découvrez nos 14 chambres de standing alliant artisanat bamiléké et confort contemporain." />
+	<title>Nos Hébergements | {data.content?.name ?? 'Villa Boutanga'}</title>
+	<meta name="description" content="Découvrez nos chambres alliant artisanat et confort contemporain." />
 </svelte:head>
 
-<!-- Grâce au fichier +layout.svelte configuré précédemment, 
+<!-- Grâce au fichier +layout.svelte configuré précédemment,
      la Navbar et le Footer sont déjà gérés automatiquement ! -->
 
-<Banner />
+{#if show(page?.banner)}
+	<Banner section={page?.banner ?? null} />
+{/if}
 
 <RoomGrid rooms={data.rooms} />

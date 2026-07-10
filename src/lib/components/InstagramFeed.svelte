@@ -1,13 +1,26 @@
 <script lang="ts">
-	// Plus besoin d'importer depuis lucide-svelte
-	
-	const instagramPosts = [
-		{ id: 1, image: 'https://images.unsplash.com/photo-1542314831-c6a4d14b93b2?q=80&w=400&auto=format&fit=crop', link: '#' },
-		{ id: 2, image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=400&auto=format&fit=crop', link: '#' },
-		{ id: 3, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400&auto=format&fit=crop', link: '#' },
-		{ id: 4, image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=400&auto=format&fit=crop', link: '#' },
-		{ id: 5, image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=400&auto=format&fit=crop', link: '#' }
+	import type { InstagramSection } from '$lib/types/api';
+
+	let { section = null }: { section?: InstagramSection | null } = $props();
+
+	const defaultImages = [
+		'https://images.unsplash.com/photo-1542314831-c6a4d14b93b2?q=80&w=400&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=400&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=400&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=400&auto=format&fit=crop'
 	];
+
+	// Photos importées dans pms (galerie Instagram), repli sur les images de
+	// démonstration. Le lien pointe vers le compte si renseigné.
+	const handle = $derived(section?.handle ?? null);
+	const profileLink = $derived(handle ? `https://instagram.com/${handle.replace(/^@/, '')}` : '#');
+	const instagramPosts = $derived(
+		(section?.images?.length ? section.images : defaultImages).map((image) => ({
+			image,
+			link: profileLink
+		}))
+	);
 </script>
 
 <section id="instagram" class="py-24 bg-vb-ivory">
@@ -21,7 +34,7 @@
 			</span>
 			
 			<h2 class="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-vb-green leading-[1.2]">
-				Suivez-nous sur Instagram
+				Suivez-nous sur Instagram{#if handle} <span class="text-vb-gold">{handle}</span>{/if}
 			</h2>
 		</div>
 

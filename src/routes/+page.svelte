@@ -14,6 +14,12 @@
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();
+
+    const home = $derived(data.content?.pages?.home ?? null);
+
+    // Section absente du payload (instance pms antérieure aux onglets par
+    // page) => affichée par défaut avec son contenu statique de repli.
+    const show = (section?: { enabled: boolean } | null) => section?.enabled ?? true;
 </script>
 
 <svelte:head>
@@ -23,28 +29,51 @@
 	{/if}
 </svelte:head>
 
-<Hero content={data.content} />
+{#if show(home?.hero)}
+	<Hero content={data.content} />
+	<div class="h-16 md:h-24 bg-transparent"></div>
+{/if}
 
-<div class="h-16 md:h-24 bg-transparent"></div>
+{#if show(home?.philosophy)}
+	<About section={home?.philosophy ?? null} />
+{/if}
 
-<About />
+{#if show(home?.services)}
+	<Services section={home?.services ?? null} />
+{/if}
 
-<Services />
+{#if show(home?.rooms)}
+	<Rooms section={home?.rooms ?? null} roomTypes={data.homeRoomTypes} />
+{/if}
 
-<Rooms />
+{#if show(home?.testimonials)}
+	<Testimonials section={home?.testimonials ?? null} />
+{/if}
 
-<Testimonials />
+{#if show(home?.video)}
+	<VideoBanner section={home?.video ?? null} />
+{/if}
 
-<VideoBanner />
+{#if show(home?.offers)}
+	<Offers section={home?.offers ?? null} />
+{/if}
 
-<Offers />
+{#if show(home?.restaurant)}
+	<Restaurant section={home?.restaurant ?? null} />
+{/if}
 
-<Restaurant />
+{#if show(home?.discovery)}
+	<Activities section={home?.discovery ?? null} />
+{/if}
 
-<Activities />
+{#if show(home?.instagram)}
+	<InstagramFeed section={home?.instagram ?? null} />
+{/if}
 
-<InstagramFeed />
+{#if show(home?.newsletter)}
+	<NewsLetter section={home?.newsletter ?? null} />
+{/if}
 
-<NewsLetter />
-
-<Contact />
+{#if show(home?.contact_form)}
+	<Contact section={home?.contact_form ?? null} content={data.content} />
+{/if}

@@ -1,4 +1,11 @@
 <script lang="ts">
+	import type { NewsletterSection } from '$lib/types/api';
+
+	let { section = null }: { section?: NewsletterSection | null } = $props();
+
+	const eyebrow = $derived(section?.subtitle ?? 'Offres Exclusives');
+	const title = $derived(section?.title ?? 'Rejoignez notre Newsletter');
+
 	// Utilisation des Runes de Svelte 5 pour gérer l'état du champ email
 	let email = $state('');
 
@@ -16,13 +23,13 @@
 		<!-- Eyebrow -->
 		<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 flex items-center justify-center gap-4">
 			<span class="w-6 h-px bg-vb-gold"></span>
-			Offres Exclusives
+			{eyebrow}
 			<span class="w-6 h-px bg-vb-gold"></span>
 		</span>
-		
+
 		<!-- Titre (Playfair, texte Ivoire selon le Design System) -->
 		<h2 class="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-vb-ivory leading-[1.2] mb-10">
-			Rejoignez notre Newsletter
+			{title}
 		</h2>
 
 		<!-- Formulaire fusionné (Input + Bouton) avec l'ombre spécifique -->
