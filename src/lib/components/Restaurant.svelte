@@ -1,5 +1,15 @@
 <script lang="ts">
 	import { Soup, Pizza, Martini } from '@lucide/svelte';
+	import type { RestaurantHomeSection } from '$lib/types/api';
+
+	let { section = null }: { section?: RestaurantHomeSection | null } = $props();
+
+	const title = $derived(section?.title ?? 'Le Jacaranda');
+	const body = $derived(
+		section?.body ??
+			'Notre restaurant vous accueille sur sa terrasse panoramique pour une cuisine savoureuse et responsable. Tous nos légumes, herbes et fruits proviennent directement du potager biologique du domaine.'
+	);
+	const image = $derived(section?.image ?? '/images/IMG3.webp');
 </script>
 
 <section id="restauration" class="py-24 bg-vb-white">
@@ -20,12 +30,12 @@
 				
 				<!-- Titre & Séparateur -->
 				<h2 class="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-vb-green leading-[1.2] mb-6">
-					Le Jacaranda
+					{title}
 				</h2>
-				
+
 				<!-- Paragraphe descriptif -->
 				<p class="font-sans text-[0.95rem] md:text-[1rem] font-normal text-vb-slate leading-[1.7] mb-10">
-					Notre restaurant vous accueille sur sa terrasse panoramique pour une cuisine savoureuse et responsable. Tous nos légumes, herbes et fruits proviennent directement du potager biologique du domaine.
+					{body}
 				</p>
 
 				<!-- Liste des Spécialités (Cartes d'équipement adaptées) -->
@@ -71,9 +81,9 @@
 			     COLONNE DROITE : Image
 			     ========================================== -->
 			<div class="relative h-[450px] md:h-[650px] w-full">
-				<img 
-					src="/images/IMG3.webp" 
-					alt="Restaurant Le Jacaranda - Plats et ambiance" 
+				<img
+					src={image}
+					alt="Restaurant — plats et ambiance"
 					class="w-full h-full object-cover rounded-[12px] shadow-room"
 				/>
 			</div>

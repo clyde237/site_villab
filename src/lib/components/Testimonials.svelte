@@ -1,26 +1,44 @@
 <script lang="ts">
 	import { Star, ArrowLeft, ArrowRight } from '@lucide/svelte';
+	import type { TestimonialsSection } from '$lib/types/api';
+
+	let { section = null }: { section?: TestimonialsSection | null } = $props();
 
 	// État du slider
 	let currentIndex = $state(0);
 
-	// Données des témoignages
-	const reviews = [
+	const avatarPool = [
+		'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop',
+		'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop'
+	];
+
+	const defaultReviews = [
 		{
-			id: 1,
 			text: "J'avais besoin de m'éloigner de la ville et de me ressourcer. Après une semaine ici, je suis heureux de ce choix. La Villa est grande et paisible. Le personnel était serviable et accommodant. La nourriture était excellente et la Fondation Gacha juste à côté offre une dimension culturelle rare qu'on ne trouve nulle part ailleurs. Je reviendrai.",
-			author: "Kevin M.",
+			author: 'Kevin M.',
 			role: "COO d'une startup tech — TripAdvisor ✓",
-			avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop"
+			avatar: avatarPool[0]
 		},
 		{
-			id: 2,
 			text: "Un séjour absolument magique. L'architecture respecte les traditions locales tout en offrant un confort irréprochable. Se réveiller avec la vue sur les collines du Ndé n'a pas de prix. Le restaurant est également une très belle découverte avec ses produits du potager.",
-			author: "Sophie T.",
-			role: "Voyageuse — Booking.com ✓",
-			avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop"
+			author: 'Sophie T.',
+			role: 'Voyageuse — Booking.com ✓',
+			avatar: avatarPool[1]
 		}
 	];
+
+	// Témoignages saisis dans pms (Auteur | Texte), repli sur les statiques.
+	const reviews = $derived(
+		section?.items?.length
+			? section.items.map((item, i) => ({
+					text: item.text ?? '',
+					author: item.author ?? 'Client',
+					role: 'Client vérifié',
+					avatar: avatarPool[i % avatarPool.length]
+				}))
+			: defaultReviews
+	);
 
 	// Fonctions de navigation
 	function nextSlide() {

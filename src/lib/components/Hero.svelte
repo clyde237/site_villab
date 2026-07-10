@@ -5,15 +5,18 @@
 
 	let { content = null }: { content?: CmsContent | null } = $props();
 
-	// Repli sur le texte par défaut tant que le contenu n'a pas été renseigné
-	// dans pms (onglet "Contenu du site") — jamais de section vide.
-	let title = $derived(content?.hero.title ?? "Un havre de paix éco-responsable au cœur de l'Ouest Cameroun");
+	// Priorité au contenu par pages (pages.home.hero), puis à l'ancien format
+	// à plat, puis au texte statique — jamais de section vide.
+	const hero = $derived(content?.pages?.home?.hero ?? null);
+
+	let title = $derived(hero?.title ?? content?.hero.title ?? "Un havre de paix éco-responsable au cœur de l'Ouest Cameroun");
 	let subtitle = $derived(
-		content?.hero.subtitle ??
+		hero?.subtitle ??
+			content?.hero.subtitle ??
 			'Perchée sur les collines verdoyantes de Bangoulap, la Villa Boutanga associe confort contemporain, culture bamilékée et tourisme solidaire.'
 	);
-	let ctaLabel = $derived(content?.hero.cta_label ?? 'Découvrir nos chambres');
-	let backgroundImage = $derived(content?.hero.background_image ?? '/images/IMG7.webp');
+	let ctaLabel = $derived(hero?.cta_label ?? content?.hero.cta_label ?? 'Découvrir nos chambres');
+	let backgroundImage = $derived(hero?.background_image ?? content?.hero.background_image ?? '/images/IMG7.webp');
 </script>
 
 <section id="accueil" class="relative pt-[100px] pb-[160px] bg-vb-dark flex items-center min-h-[75vh] md:min-h-[85vh]">

@@ -1,10 +1,18 @@
 <script lang="ts">
 	import { Users, Maximize, Wifi, BedDouble, ArrowRight } from '@lucide/svelte';
+	import type { RoomsSection, RoomTypeApi } from '$lib/types/api';
 
-	// Structure des données des chambres (prête à être dynamisée avec ton ERP Laravel plus tard)
-	const rooms = [
+	let {
+		section = null,
+		roomTypes = []
+	}: { section?: RoomsSection | null; roomTypes?: RoomTypeApi[] } = $props();
+
+	const eyebrow = $derived(section?.subtitle ?? 'Nos Hébergements');
+	const title = $derived(section?.title ?? 'Charme & Confort');
+
+	const defaultRooms = [
 		{
-			id: 1,
+			id: null as number | null,
 			name: 'Chambre Standard',
 			badge: 'Confort',
 			image: '/images/IMG12.webp',
@@ -18,7 +26,7 @@
 			]
 		},
 		{
-			id: 2,
+			id: null as number | null,
 			name: 'Suite Junior',
 			badge: 'Populaire',
 			image: '/images/IMG11.webp',
@@ -32,7 +40,7 @@
 			]
 		},
 		{
-			id: 3,
+			id: null as number | null,
 			name: 'Suite Familiale',
 			badge: 'Prestige',
 			image: '/images/IMG10.webp',
@@ -46,6 +54,27 @@
 			]
 		}
 	];
+
+	// Chambres réelles de l'établissement (API de l'application), repli sur
+	// les cartes statiques tant qu'aucun type de chambre n'est disponible.
+	const rooms = $derived(
+		roomTypes.length
+			? roomTypes.map((r) => ({
+					id: r.id,
+					name: r.name,
+					badge: r.available_rooms_count > 1 ? `${r.available_rooms_count} disponibles` : 'Dernière dispo',
+					image: r.photos[0] ?? '/images/IMG8.webp',
+					description: r.description ?? '',
+					price: new Intl.NumberFormat('fr-FR').format(r.price.amount / 100),
+					features: [
+						{ icon: Users, text: `${r.base_capacity}-${r.max_capacity} pers.` },
+						...(r.size_sqm ? [{ icon: Maximize, text: `${r.size_sqm} m²` }] : []),
+						...(r.bed_configuration ? [{ icon: BedDouble, text: r.bed_configuration }] : []),
+						...(r.amenities[0] ? [{ icon: Wifi, text: r.amenities[0] }] : [])
+					]
+				}))
+			: defaultRooms
+	);
 </script>
 
 <section id="hebergements" class="py-24 bg-vb-white">
@@ -54,13 +83,13 @@
 		<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
 			<div>
 				<span class="font-sans text-[0.72rem] font-semibold tracking-[0.14em] uppercase text-vb-gold mb-3 block">
-					Nos Hébergements
+					{eyebrow}
 				</span>
 				<h2 class="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-vb-green leading-[1.2]">
-					Charme & Confort
+					{title}
 				</h2>
 			</div>
-			<a href="#hebergements" class="font-sans text-[0.85rem] font-semibold tracking-wider text-vb-green flex items-center gap-2 hover:text-vb-gold transition-colors group">
+			<a href="/heb" class="font-sans text-[0.85rem] font-semibold tracking-wider text-vb-green flex items-center gap-2 hover:text-vb-gold transition-colors group">
 				Voir toutes nos chambres
 				<ArrowRight class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
 			</a>
@@ -108,7 +137,7 @@
 								</div>
 							</div>
 							
-							<a href="#contact" class="font-sans font-semibold text-[0.78rem] text-vb-green border-[1.5px] border-vb-green px-[1.1rem] py-2 rounded-[4px] hover:bg-vb-green hover:text-vb-ivory transition-colors duration-200">
+							<a href={room.id ? `/heb/room/${room.id}` : '/heb'} class="font-sans font-semibold text-[0.78rem] text-vb-green border-[1.5px] border-vb-green px-[1.1rem] py-2 rounded-[4px] hover:bg-vb-green hover:text-vb-ivory transition-colors duration-200">
 								Réserver
 							</a>
 						</div>

@@ -1,12 +1,25 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import type { CmsContent } from '$lib/types/api';
+
+	let { content = null }: { content?: CmsContent | null } = $props();
+
+	// Nom et logo de l'établissement (création dans pms), repli statique.
+	// Le nom est scindé sur le premier espace pour garder l'accent doré du
+	// template sur la fin du nom ("Villa <Boutanga>").
+	const name = $derived(content?.name ?? 'Villa Boutanga');
+	const logo = $derived(content?.logo ?? '/images/logo-b.png');
+	const nameParts = $derived.by(() => {
+		const idx = name.indexOf(' ');
+		return idx === -1 ? { first: name, rest: null } : { first: name.slice(0, idx), rest: name.slice(idx + 1) };
+	});
 </script>
 
 <header class="sticky top-0 z-50 bg-vb-white h-[64px] flex items-center border-b border-vb-ivory3 shadow-nav">
 	<div class="max-w-[1100px] w-full mx-auto px-4 flex justify-between items-center">
 		<a href="/" class="font-serif text-[1.5rem] font-semibold text-vb-green tracking-[0.04em] flex items-center gap-2 select-none">
-			<img src="/images/logo-b.png" alt="logo" class="w-20 h-20"/>
-			<span>Villa <span class="text-vb-gold">Boutanga</span></span>
+			<img src={logo} alt="Logo {name}" class="w-20 h-20 object-contain"/>
+			<span>{nameParts.first}{#if nameParts.rest} <span class="text-vb-gold">{nameParts.rest}</span>{/if}</span>
 		</a>
 
 		<nav class="hidden md:flex items-center gap-8 font-sans text-[0.8rem] font-medium tracking-[0.06em] uppercase">

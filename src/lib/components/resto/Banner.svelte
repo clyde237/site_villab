@@ -1,9 +1,18 @@
 <script lang="ts">
 	import { ChevronRight } from '@lucide/svelte';
+	import type { BannerSection } from '$lib/types/api';
+
+	let { section = null }: { section?: BannerSection | null } = $props();
+
+	const title = $derived(section?.title ?? 'Le Jacaranda');
+	const subtitle = $derived(
+		section?.subtitle ??
+			"Que vous soyez d'humeur pour un petit-déjeuner tranquille, un déjeuner en plein air ou un dîner romantique au coucher du soleil."
+	);
+	const backgroundImage = $derived(section?.background_image ?? '/images/IMG4.webp');
 </script>
 
-<!-- Utilisation d'une image de restaurant élégante via Unsplash -->
-<section class="relative flex items-center justify-center min-h-[400px] md:min-h-[480px] bg-cover bg-center bg-no-repeat" style="background-image: url('/images/IMG4.webp');">
+<section class="relative flex items-center justify-center min-h-[400px] md:min-h-[480px] bg-cover bg-center bg-no-repeat" style="background-image: url('{backgroundImage}');">
 	
 	<!-- Overlay sombre pour garantir la lisibilité du texte -->
 	<div class="absolute inset-0 bg-vb-dark/65"></div>
@@ -13,12 +22,12 @@
 		
 		<!-- Titre Principal (Playfair Display) -->
 		<h1 class="font-serif text-[clamp(2.5rem,5vw,4rem)] font-bold text-vb-white leading-tight mb-6 drop-shadow-sm">
-			Le Jacaranda
+			{title}
 		</h1>
 
 		<!-- Sous-titre (Jost) -->
 		<p class="font-sans text-[0.95rem] md:text-[1.1rem] text-vb-ivory/90 leading-relaxed font-light">
-			Que vous soyez d'humeur pour un petit-déjeuner tranquille, un déjeuner en plein air ou un dîner romantique au coucher du soleil.
+			{subtitle}
 		</p>
 	</div>
 

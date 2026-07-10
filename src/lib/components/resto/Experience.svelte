@@ -1,5 +1,15 @@
 <script lang="ts">
 	import { ArrowRight } from '@lucide/svelte';
+	import type { ExperienceSection } from '$lib/types/api';
+
+	let { section = null }: { section?: ExperienceSection | null } = $props();
+
+	const title = $derived(section?.title ?? "Du Potager à l'Assiette : Savourez des Plats Frais et de Saison au Jacaranda");
+	const body = $derived(
+		section?.body ??
+			'Notre restaurant vous accueille sur sa terrasse panoramique pour vous faire découvrir une cuisine savoureuse et responsable. Tous nos légumes, herbes aromatiques et fruits de saison proviennent directement du potager biologique du domaine. Nous privilégions les circuits courts et soutenons les producteurs locaux pour nos viandes et nos poissons, dans un esprit de tourisme solidaire au cœur du Ndé.'
+	);
+	const mainImage = $derived(section?.image ?? '/images/IMG3.webp');
 </script>
 
 <section class="py-24 bg-vb-white">
@@ -14,9 +24,9 @@
 			<div class="relative w-full h-[550px] md:h-[650px] hidden sm:block">
 				
 				<!-- Image Principale (Arrière-plan : Intérieur du restaurant) -->
-				<img 
-					src="/images/IMG3.webp" 
-					alt="Intérieur du restaurant Le Jacaranda" 
+				<img
+					src={mainImage}
+					alt="Intérieur du restaurant"
 					class="absolute top-0 left-0 w-[75%] h-[80%] object-cover rounded-[12px]"
 				/>
 				
@@ -44,17 +54,12 @@
 				
 				<!-- Titre -->
 				<h2 class="font-serif text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-vb-dark leading-[1.2] mb-6">
-					Du Potager à l'Assiette :<br/>Savourez des Plats Frais et de Saison au Jacaranda
+					{title}
 				</h2>
-				
+
 				<!-- Paragraphes -->
 				<div class="font-sans text-[0.95rem] md:text-[1rem] text-vb-slate leading-[1.7] flex flex-col gap-5 mb-8">
-					<p>
-						Notre restaurant vous accueille sur sa terrasse panoramique pour vous faire découvrir une cuisine savoureuse et responsable. Tous nos légumes, herbes aromatiques et fruits de saison proviennent directement du potager biologique du domaine.
-					</p>
-					<p>
-						Nous privilégions les circuits courts et soutenons les producteurs locaux pour nos viandes et nos poissons, dans un esprit de tourisme solidaire au cœur du Ndé.
-					</p>
+					<p>{body}</p>
 				</div>
 				
 				<!-- Séparateur Doré -->
