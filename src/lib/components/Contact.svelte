@@ -10,8 +10,10 @@
 	const title = $derived(section?.title ?? 'Contact & Réservation');
 	const intro = $derived(section?.intro ?? null);
 
-	// Coordonnées réelles de l'établissement (onglet Informations de pms),
-	// repli sur les valeurs statiques du template.
+	// Coordonnées réelles de l'établissement (création dans pms / onglet
+	// Identité du site). Avec CMS, une coordonnée absente est masquée — les
+	// valeurs statiques ne servent qu'en dev local sans API.
+	const isDemo = $derived(content === null);
 	const address = $derived(content?.contact?.address ?? null);
 	const phone = $derived(content?.contact?.phone ?? null);
 	const hours = $derived(content?.contact?.hours ?? null);
@@ -62,40 +64,46 @@
 
 				<div class="flex flex-col gap-8 mb-10">
 					<!-- Adresse -->
-					<div>
-						<h4 class="font-sans text-[0.68rem] font-semibold tracking-[0.08em] uppercase text-vb-gold mb-2">Adresse</h4>
-						<p class="font-sans text-[0.95rem] text-vb-slate leading-relaxed">
-							{#if address}
-								{address}
-							{:else}
-								Code Plus : <strong class="font-medium text-vb-dark">3GJJ+QC7</strong><br />
-								Village Bangoulap, Bangangté<br />
-								Région de l'Ouest, Cameroun
-							{/if}
-						</p>
-					</div>
+					{#if address || isDemo}
+						<div>
+							<h4 class="font-sans text-[0.68rem] font-semibold tracking-[0.08em] uppercase text-vb-gold mb-2">Adresse</h4>
+							<p class="font-sans text-[0.95rem] text-vb-slate leading-relaxed">
+								{#if address}
+									{address}
+								{:else}
+									Code Plus : <strong class="font-medium text-vb-dark">3GJJ+QC7</strong><br />
+									Village Bangoulap, Bangangté<br />
+									Région de l'Ouest, Cameroun
+								{/if}
+							</p>
+						</div>
+					{/if}
 
 					<!-- Téléphone / WhatsApp -->
-					<div>
-						<h4 class="font-sans text-[0.68rem] font-semibold tracking-[0.08em] uppercase text-vb-gold mb-2">Téléphone / WhatsApp</h4>
-						<a href="tel:{(phone ?? '+237695856095').replace(/\s/g, '')}" class="font-sans text-[1.1rem] font-bold text-vb-green hover:text-vb-gold transition-colors">
-							{phone ?? '+237 6 95 85 60 95'}
-						</a>
-					</div>
+					{#if phone || isDemo}
+						<div>
+							<h4 class="font-sans text-[0.68rem] font-semibold tracking-[0.08em] uppercase text-vb-gold mb-2">Téléphone / WhatsApp</h4>
+							<a href="tel:{(phone ?? '+237695856095').replace(/\s/g, '')}" class="font-sans text-[1.1rem] font-bold text-vb-green hover:text-vb-gold transition-colors">
+								{phone ?? '+237 6 95 85 60 95'}
+							</a>
+						</div>
+					{/if}
 
 					<!-- Accès / Horaires -->
-					<div>
-						<h4 class="font-sans text-[0.68rem] font-semibold tracking-[0.08em] uppercase text-vb-gold mb-2">{hours ? 'Horaires' : 'Accès'}</h4>
-						<p class="font-sans text-[0.9rem] text-vb-slate leading-relaxed">
-							{#if hours}
-								{hours}
-							{:else}
-								Axe Yaoundé/Douala → Bafoussam, sortie Bangangté.<br />
-								7 km du centre-ville de Bangangté.<br />
-								65 km de l'aéroport de Bafoussam.
-							{/if}
-						</p>
-					</div>
+					{#if hours || isDemo}
+						<div>
+							<h4 class="font-sans text-[0.68rem] font-semibold tracking-[0.08em] uppercase text-vb-gold mb-2">{hours ? 'Horaires' : 'Accès'}</h4>
+							<p class="font-sans text-[0.9rem] text-vb-slate leading-relaxed">
+								{#if hours}
+									{hours}
+								{:else}
+									Axe Yaoundé/Douala → Bafoussam, sortie Bangangté.<br />
+									7 km du centre-ville de Bangangté.<br />
+									65 km de l'aéroport de Bafoussam.
+								{/if}
+							</p>
+						</div>
+					{/if}
 				</div>
 
 				<!-- Badge Altitude -->

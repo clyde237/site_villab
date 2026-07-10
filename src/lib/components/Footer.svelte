@@ -5,12 +5,18 @@
 
 	let { content = null }: { content?: CmsContent | null } = $props();
 
-	// Identité et coordonnées de l'établissement (création dans pms),
-	// repli sur le contenu statique du template.
+	// Identité et coordonnées de l'établissement (création dans pms / onglet
+	// Identité du site). Avec CMS, une coordonnée absente est masquée — les
+	// valeurs statiques de démo ne servent qu'en dev local sans API.
 	const name = $derived(content?.name ?? 'Villa Boutanga');
-	const phone = $derived(content?.contact?.phone ?? '+237 6 95 85 60 95');
-	const email = $derived(content?.contact?.email ?? 'contact@villaboutanga.cm');
-	const address = $derived(content?.contact?.address ?? 'Village Bangoulap, Bangangté, Ouest Cameroun');
+	const phone = $derived(content ? content.contact?.phone : '+237 6 95 85 60 95');
+	const email = $derived(content ? content.contact?.email : 'contact@villaboutanga.cm');
+	const address = $derived(content ? content.contact?.address : 'Village Bangoulap, Bangangté, Ouest Cameroun');
+	const description = $derived(
+		content
+			? (content.seo?.description ?? null)
+			: "Gîte de charme de la Fondation Jean-Félicien Gacha. Bangoulap, Région de l'Ouest, Cameroun — 1 500 m d'altitude."
+	);
 	const nameParts = $derived.by(() => {
 		const idx = name.indexOf(' ');
 		return idx === -1 ? { first: name, rest: null } : { first: name.slice(0, idx), rest: name.slice(idx + 1) };
@@ -29,9 +35,11 @@
 					<span>{nameParts.first}{#if nameParts.rest} <span class="text-vb-gold">{nameParts.rest}</span>{/if}</span>
 				</a>
 
-				<p class="font-sans text-[0.9rem] leading-[1.7] max-w-sm">
-					{content?.seo?.description ?? 'Gîte de charme de la Fondation Jean-Félicien Gacha. Bangoulap, Région de l\'Ouest, Cameroun — 1 500 m d\'altitude.'}
-				</p>
+				{#if description}
+					<p class="font-sans text-[0.9rem] leading-[1.7] max-w-sm">
+						{description}
+					</p>
+				{/if}
 				
 				<!-- Réseaux Sociaux (SVG Natifs) -->
 				<div class="flex gap-4 mt-2">
@@ -96,24 +104,30 @@
 					Contact
 				</h4>
 				<ul class="flex flex-col gap-4 font-sans text-[0.9rem]">
-					<li class="flex items-start gap-3">
-						<Phone class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
-						<a href="tel:{phone.replace(/\s/g, '')}" class="hover:text-vb-gold transition-colors duration-200">
-							{phone}
-						</a>
-					</li>
-					<li class="flex items-start gap-3">
-						<Mail class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
-						<a href="mailto:{email}" class="hover:text-vb-gold transition-colors duration-200 break-all">
-							{email}
-						</a>
-					</li>
-					<li class="flex items-start gap-3">
-						<MapPin class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
-						<span class="leading-relaxed">
-							{address}
-						</span>
-					</li>
+					{#if phone}
+						<li class="flex items-start gap-3">
+							<Phone class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
+							<a href="tel:{phone.replace(/\s/g, '')}" class="hover:text-vb-gold transition-colors duration-200">
+								{phone}
+							</a>
+						</li>
+					{/if}
+					{#if email}
+						<li class="flex items-start gap-3">
+							<Mail class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
+							<a href="mailto:{email}" class="hover:text-vb-gold transition-colors duration-200 break-all">
+								{email}
+							</a>
+						</li>
+					{/if}
+					{#if address}
+						<li class="flex items-start gap-3">
+							<MapPin class="w-4 h-4 text-vb-gold shrink-0 mt-1" />
+							<span class="leading-relaxed">
+								{address}
+							</span>
+						</li>
+					{/if}
 				</ul>
 			</div>
 

@@ -4,11 +4,14 @@
 
 	let { content = null }: { content?: CmsContent | null } = $props();
 
-	// Nom et logo de l'établissement (création dans pms), repli statique.
-	// Le nom est scindé sur le premier espace pour garder l'accent doré du
-	// template sur la fin du nom ("Villa <Boutanga>").
+	// Nom et logo de l'établissement (création dans pms ou onglet "Identité
+	// du site" du CMS). Le nom est scindé sur le premier espace pour garder
+	// l'accent doré du template sur la fin du nom ("Villa <Boutanga>").
+	// Sans CMS (dev local), on retombe sur l'identité statique de démo ;
+	// avec CMS mais sans logo, on affiche la première lettre du nom.
 	const name = $derived(content?.name ?? 'Villa Boutanga');
-	const logo = $derived(content?.logo ?? '/images/logo-b.png');
+	const logo = $derived(content ? content.logo : '/images/logo-b.png');
+	const initial = $derived(name.charAt(0).toUpperCase());
 	const nameParts = $derived.by(() => {
 		const idx = name.indexOf(' ');
 		return idx === -1 ? { first: name, rest: null } : { first: name.slice(0, idx), rest: name.slice(idx + 1) };
@@ -18,7 +21,13 @@
 <header class="sticky top-0 z-50 bg-vb-white h-[64px] flex items-center border-b border-vb-ivory3 shadow-nav">
 	<div class="max-w-[1100px] w-full mx-auto px-4 flex justify-between items-center">
 		<a href="/" class="font-serif text-[1.5rem] font-semibold text-vb-green tracking-[0.04em] flex items-center gap-2 select-none">
-			<img src={logo} alt="Logo {name}" class="w-20 h-20 object-contain"/>
+			{#if logo}
+				<img src={logo} alt="Logo {name}" class="w-20 h-20 object-contain"/>
+			{:else}
+				<span class="w-11 h-11 rounded-full bg-vb-green text-vb-gold flex items-center justify-center font-serif font-bold text-[1.4rem] shrink-0">
+					{initial}
+				</span>
+			{/if}
 			<span>{nameParts.first}{#if nameParts.rest} <span class="text-vb-gold">{nameParts.rest}</span>{/if}</span>
 		</a>
 
