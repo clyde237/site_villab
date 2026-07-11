@@ -48,6 +48,36 @@ export function fetchTenantApi<T>(path: string, fetchFn: typeof fetch): Promise<
 }
 
 /**
+ * POST vers l'API de l'établissement (meka_template) — ex. envoi d'une
+ * demande de réservation. Retourne le statut HTTP et le corps JSON (ou null
+ * si l'API n'est pas configurée / injoignable) pour que l'appelant puisse
+ * distinguer succès (201), conflit (409) et erreurs de validation (422).
+ */
+export async function postTenantApi<T>(
+	path: string,
+	body: unknown,
+	fetchFn: typeof fetch
+): Promise<{ status: number; data: T | null }> {
+	if (!env.TENANT_API_URL) {
+		console.warn(`[api] TENANT_API_URL manquant pour POST ${path}`);
+		return { status: 0, data: null };
+	}
+
+	try {
+		const response = await fetchFn(`${env.TENANT_API_URL}/api/v1${path}`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+			body: JSON.stringify(body)
+		});
+		const data = (await response.json().catch(() => null)) as T | null;
+		return { status: response.status, data };
+	} catch (err) {
+		console.error(`[api] Échec POST ${path} :`, err);
+		return { status: 0, data: null };
+	}
+}
+
+/**
  * Vérifie que l'application de l'établissement (meka_template) répond —
  * pilote l'indicateur vert/rouge de la topbar. Timeout court pour ne pas
  * ralentir le rendu des pages quand l'application est injoignable.
