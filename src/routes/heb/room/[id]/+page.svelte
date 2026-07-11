@@ -10,14 +10,19 @@
 		CheckCircle2,
 		Mountain,
 		Tv,
-		ShowerHead
+		ShowerHead,
+		CalendarCheck
 	} from '@lucide/svelte';
-	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
+	import type { PageData, ActionData } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 
 	const room = $derived(data.room);
 	const siteName = $derived(data.content?.name ?? 'Notre établissement');
+
+	// État d'envoi du formulaire de réservation
+	let submitting = $state(false);
 
 	// Photo de secours identique à celle de la liste (chambre sans photo importée)
 	const FALLBACK_IMAGE = '/images/IMG8.webp';
@@ -37,15 +42,6 @@
 		return CheckCircle2;
 	}
 
-	// États pour le formulaire de réservation rapide
-	let checkIn = $state('');
-	let checkOut = $state('');
-	let guests = $state('2');
-
-	function handleBooking(e: Event) {
-		e.preventDefault();
-		console.log('Demande de réservation :', { checkIn, checkOut, guests, room: room.name });
-	}
 </script>
 
 <svelte:head>
@@ -174,40 +170,94 @@
 						</div>
 					</div>
 
-					<!-- Formulaire -->
-					<form onsubmit={handleBooking} class="flex flex-col gap-4">
+					{#if form?.success}
+						<!-- Confirmation de la demande -->
+						<div class="flex flex-col items-center text-center gap-3 py-6">
+							<div class="w-14 h-14 rounded-full bg-vb-green/10 flex items-center justify-center">
+								<CalendarCheck class="w-7 h-7 text-vb-green" />
+							</div>
+							<h3 class="font-serif text-[1.3rem] font-semibold text-vb-green">Demande envoyée !</h3>
+							<p class="font-sans text-[0.9rem] text-vb-slate leading-relaxed">
+								Votre demande de réservation
+								{#if form.bookingNumber}<span class="font-semibold text-vb-dark">({form.bookingNumber})</span>{/if}
+								a bien été transmise. La réception vous recontactera pour la confirmer.
+							</p>
+							<a href="/heb" class="mt-2 font-sans text-[0.85rem] font-semibold text-vb-gold hover:text-vb-green transition-colors">
+								Voir d'autres chambres
+							</a>
+						</div>
+					{:else}
+						<!-- Formulaire -->
+						<form method="POST" use:enhance={() => {
+							submitting = true;
+							return async ({ update }) => {
+								await update();
+								submitting = false;
+							};
+						}} class="flex flex-col gap-4">
 
-						<!-- Dates -->
-						<div class="grid grid-cols-2 gap-3">
+							{#if form?.error}
+								<div class="font-sans text-[0.8rem] text-red-700 bg-red-50 border border-red-200 rounded-[4px] px-3 py-2.5">
+									{form.error}
+								</div>
+							{/if}
+
+							<!-- Dates -->
+							<div class="grid grid-cols-2 gap-3">
+								<div class="flex flex-col gap-1.5">
+									<label for="check_in" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Arrivée</label>
+									<input type="date" id="check_in" name="check_in" value={form?.check_in ?? ''} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+								</div>
+								<div class="flex flex-col gap-1.5">
+									<label for="check_out" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Départ</label>
+									<input type="date" id="check_out" name="check_out" value={form?.check_out ?? ''} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+								</div>
+							</div>
+
+							<!-- Voyageurs (borné par la capacité max du type de chambre) -->
 							<div class="flex flex-col gap-1.5">
-								<label for="checkIn" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Arrivée</label>
-								<input type="date" id="checkIn" bind:value={checkIn} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+								<label for="guests" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Voyageurs</label>
+								<select id="guests" name="guests" class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark">
+									{#each Array.from({ length: room.maxCapacity }, (_, i) => i + 1) as n}
+										<option value={String(n)} selected={String(n) === String(form?.adults ?? 2)}>{n} {n > 1 ? 'Personnes' : 'Personne'}</option>
+									{/each}
+								</select>
+							</div>
+
+							<!-- Coordonnées du client -->
+							<div class="grid grid-cols-2 gap-3">
+								<div class="flex flex-col gap-1.5">
+									<label for="first_name" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Prénom</label>
+									<input type="text" id="first_name" name="first_name" value={form?.first_name ?? ''} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+								</div>
+								<div class="flex flex-col gap-1.5">
+									<label for="last_name" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Nom</label>
+									<input type="text" id="last_name" name="last_name" value={form?.last_name ?? ''} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+								</div>
 							</div>
 							<div class="flex flex-col gap-1.5">
-								<label for="checkOut" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Départ</label>
-								<input type="date" id="checkOut" bind:value={checkOut} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+								<label for="phone" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Téléphone</label>
+								<input type="tel" id="phone" name="phone" value={form?.phone ?? ''} required placeholder="+237 6 XX XX XX XX" class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
 							</div>
-						</div>
+							<div class="flex flex-col gap-1.5">
+								<label for="email" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Email <span class="normal-case text-vb-slate/60">(optionnel)</span></label>
+								<input type="email" id="email" name="email" value={form?.email ?? ''} class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+							</div>
+							<div class="flex flex-col gap-1.5">
+								<label for="notes" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Demande particulière <span class="normal-case text-vb-slate/60">(optionnel)</span></label>
+								<textarea id="notes" name="notes" rows="2" class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark resize-none">{form?.notes ?? ''}</textarea>
+							</div>
 
-						<!-- Voyageurs (borné par la capacité max du type de chambre) -->
-						<div class="flex flex-col gap-1.5">
-							<label for="guests" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Voyageurs</label>
-							<select id="guests" bind:value={guests} class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark">
-								{#each Array.from({ length: room.maxCapacity }, (_, i) => i + 1) as n}
-									<option value={String(n)}>{n} {n > 1 ? 'Personnes' : 'Personne'}</option>
-								{/each}
-							</select>
-						</div>
+							<!-- Bouton -->
+							<button type="submit" disabled={submitting} class="w-full mt-2 bg-vb-green hover:bg-vb-green2 text-vb-white font-sans font-semibold text-[1rem] tracking-wider py-4 rounded-[4px] transition-colors duration-200 disabled:opacity-60 disabled:cursor-wait">
+								{submitting ? 'Envoi en cours…' : 'Réserver cette chambre'}
+							</button>
 
-						<!-- Bouton -->
-						<button type="submit" class="w-full mt-4 bg-vb-green hover:bg-vb-green2 text-vb-white font-sans font-semibold text-[1rem] tracking-wider py-4 rounded-[4px] transition-colors duration-200">
-							Réserver cette chambre
-						</button>
-
-						<p class="font-sans text-center text-[0.75rem] text-vb-slate mt-2">
-							Aucun paiement requis maintenant.
-						</p>
-					</form>
+							<p class="font-sans text-center text-[0.75rem] text-vb-slate mt-1">
+								Aucun paiement requis maintenant — demande à confirmer par la réception.
+							</p>
+						</form>
+					{/if}
 
 				</div>
 			</div>
