@@ -84,10 +84,18 @@
 
 				<!-- En-tête de la chambre -->
 				<div>
-					<div class="flex items-center gap-3 mb-4">
+					<div class="flex flex-wrap items-center gap-3 mb-4">
 						<span class="bg-vb-gold text-vb-white text-[0.65rem] font-bold tracking-[0.08em] uppercase px-3 py-1 rounded-[4px]">
-							{room.availableCount > 1 ? `${room.availableCount} chambres disponibles` : 'Dernière chambre disponible'}
+							Chambre {room.number}
 						</span>
+						{#if room.view}
+							<span class="border border-vb-gold/40 text-vb-gold text-[0.65rem] font-semibold tracking-[0.06em] uppercase px-3 py-1 rounded-[4px]">
+								Vue {room.view}
+							</span>
+						{/if}
+						{#if room.floor}
+							<span class="text-vb-slate/70 font-sans text-[0.75rem]">Étage {room.floor}</span>
+						{/if}
 					</div>
 					<h1 class="font-serif text-[clamp(2rem,4vw,3rem)] font-bold text-vb-dark leading-tight mb-6">
 						{room.name}

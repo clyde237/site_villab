@@ -22,7 +22,12 @@
 	<div class="max-w-[1100px] w-full mx-auto px-4 flex justify-between items-center">
 		<a href="/" class="font-serif text-[1.5rem] font-semibold text-vb-green tracking-[0.04em] flex items-center gap-2 select-none">
 			{#if logo}
-				<img src={logo} alt="Logo {name}" class="w-20 h-20 object-contain"/>
+				<!-- Boîte fixe : quelle que soit la taille du logo importé depuis
+				     le CMS, l'image est contenue (object-contain) sans jamais
+				     dépasser la hauteur de la navbar (64px). -->
+				<span class="h-11 w-11 flex items-center justify-center shrink-0">
+					<img src={logo} alt="Logo {name}" class="max-h-11 max-w-11 w-auto h-auto object-contain"/>
+				</span>
 			{:else}
 				<span class="w-11 h-11 rounded-full bg-vb-green text-vb-gold flex items-center justify-center font-serif font-bold text-[1.4rem] shrink-0">
 					{initial}
