@@ -195,6 +195,24 @@ export interface RoomTypeApi {
 	available_rooms_count: number;
 }
 
+// Chambre individuelle (infos du type aplaties + caractéristiques propres)
+export interface RoomApi {
+	id: number;
+	number: string;
+	floor: string | null;
+	view_type: string | null;
+	type_id: number | null;
+	name: string | null;
+	description: string | null;
+	base_capacity: number;
+	max_capacity: number;
+	size_sqm: number | null;
+	bed_configuration: string | null;
+	amenities: string[];
+	photos: string[];
+	price: { amount: number; formatted: string };
+}
+
 export interface MenuItemApi {
 	id: number;
 	name: string;

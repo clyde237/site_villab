@@ -1,23 +1,26 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { fetchTenantApi } from '$lib/server/api';
-import type { RoomTypeApi } from '$lib/types/api';
+import type { RoomApi } from '$lib/types/api';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
-	// L'API renvoie 404 si le type est inactif ou n'a plus aucune chambre
-	// disponible (voir PublicRoomController::show côté meka_template).
-	const roomType = await fetchTenantApi<{ data: RoomTypeApi }>(`/room-types/${params.id}`, fetch);
+	// L'API renvoie 404 si la chambre est inactive ou indisponible
+	// (voir PublicRoomController::roomShow côté meka_template).
+	const room = await fetchTenantApi<{ data: RoomApi }>(`/rooms/${params.id}`, fetch);
 
-	if (!roomType?.data) {
+	if (!room?.data) {
 		error(404, 'Cette chambre est introuvable ou n’est plus disponible.');
 	}
 
-	const r = roomType.data;
+	const r = room.data;
 
 	return {
 		room: {
 			id: r.id,
-			name: r.name,
+			name: r.name ?? 'Chambre',
+			number: r.number,
+			floor: r.floor,
+			view: r.view_type,
 			description: r.description,
 			size: r.size_sqm ? `${r.size_sqm} m²` : null,
 			capacity: `${r.base_capacity}-${r.max_capacity} pers.`,
@@ -27,8 +30,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			photos: r.photos,
 			// Même convention que la liste : juste le nombre, le suffixe
 			// "FCFA / nuit" est posé par le template.
-			price: new Intl.NumberFormat('fr-FR').format(r.price.amount / 100),
-			availableCount: r.available_rooms_count
+			price: new Intl.NumberFormat('fr-FR').format(r.price.amount / 100)
 		}
 	};
 };

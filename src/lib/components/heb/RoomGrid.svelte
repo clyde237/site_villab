@@ -4,6 +4,7 @@
 	interface Room {
 		id: number;
 		name: string;
+		number: string;
 		image: string;
 		area: string | null;
 		capacity: string;
@@ -45,9 +46,12 @@
 					<div class="relative h-[220px] overflow-hidden">
 						<img
 							src={room.image}
-							alt={room.name}
+							alt="{room.name} — chambre {room.number}"
 							class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 						/>
+						<span class="absolute top-3 left-3 bg-vb-white/90 text-vb-dark font-sans text-[0.7rem] font-semibold px-2.5 py-1 rounded-full shadow-sm">
+							Chambre {room.number}
+						</span>
 					</div>
 
 					<!-- Corps de la carte -->
