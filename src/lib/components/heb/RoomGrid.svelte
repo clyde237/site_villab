@@ -13,9 +13,13 @@
 		amenities: string[];
 		price: string;
 		availability?: RoomAvailabilityApi | null;
+		/** Lien vers la fiche, porteur des critères de recherche s'il y en a. */
+		lien?: string;
 	}
 
-	let { rooms = [] }: { rooms: Room[] } = $props();
+	// `filtre` distingue « aucune chambre au catalogue » de « aucune chambre
+	// pour ces dates » : le visiteur doit savoir laquelle des deux il voit.
+	let { rooms = [], filtre = false }: { rooms: Room[]; filtre?: boolean } = $props();
 </script>
 
 <section class="py-20 bg-vb-white">
@@ -34,7 +38,22 @@
 
 		{#if rooms.length === 0}
 			<div class="text-center py-16">
-				<p class="font-sans text-vb-slate text-[0.95rem]">Aucune chambre disponible pour le moment. Revenez bientôt !</p>
+				{#if filtre}
+					<p class="font-sans text-vb-dark text-[1rem] font-semibold">
+						Aucune chambre ne correspond à ces dates.
+					</p>
+					<p class="font-sans text-vb-slate text-[0.9rem] mt-2">
+						Essayez d'autres dates, ou réduisez le nombre de voyageurs.
+					</p>
+					<a
+						href="/heb"
+						class="mt-5 inline-block font-sans text-[0.85rem] font-semibold text-vb-gold hover:text-vb-green transition-colors"
+					>
+						Voir toutes nos chambres
+					</a>
+				{:else}
+					<p class="font-sans text-vb-slate text-[0.95rem]">Aucune chambre disponible pour le moment. Revenez bientôt !</p>
+				{/if}
 			</div>
 		{/if}
 
@@ -106,7 +125,7 @@
 								<span class="font-sans text-[0.7rem] text-vb-slate uppercase tracking-wider">FCFA/nuit</span>
 							</div>
 							
-							<a href="/heb/room/{room.id}" class="font-sans text-[0.85rem] font-semibold text-vb-gold flex items-center gap-1.5 hover:text-vb-green transition-colors group/link">
+							<a href={room.lien ?? `/heb/room/${room.id}`} class="font-sans text-[0.85rem] font-semibold text-vb-gold flex items-center gap-1.5 hover:text-vb-green transition-colors group/link">
 								Découvrir
 								<ArrowRight class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform" />
 							</a>

@@ -2,6 +2,7 @@
 	// Import du composant spécifique depuis le nouveau sous-dossier
 	import Banner from '$lib/components/heb/Banner.svelte';
 	import RoomGrid from '$lib/components/heb/RoomGrid.svelte';
+	import SearchSummary from '$lib/components/heb/SearchSummary.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -22,4 +23,12 @@
 	<Banner section={page?.banner ?? null} />
 {/if}
 
-<RoomGrid rooms={data.rooms} />
+{#if data.recherche}
+	<SearchSummary
+		recherche={data.recherche}
+		nbResultats={data.rooms.length}
+		totalCatalogue={data.totalCatalogue}
+	/>
+{/if}
+
+<RoomGrid rooms={data.rooms} filtre={data.recherche !== null} />
