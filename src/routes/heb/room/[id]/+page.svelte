@@ -14,6 +14,7 @@
 		CalendarCheck
 	} from '@lucide/svelte';
 	import { enhance } from '$app/forms';
+	import AvailabilityBadge from '$lib/components/heb/AvailabilityBadge.svelte';
 	import type { PageData, ActionData } from './$types';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
@@ -28,6 +29,54 @@
 	const FALLBACK_IMAGE = '/images/IMG8.webp';
 	const heroImage = $derived(room.photos[0] ?? FALLBACK_IMAGE);
 	const galleryImages = $derived(room.photos.slice(1, 5));
+
+	// ── Dates déjà prises ──────────────────────────────────────────────────────
+	// L'API refuserait ces périodes en 409. Autant les écarter ici : le client
+	// voit tout de suite pourquoi, au lieu de remplir tout le formulaire pour
+	// rien.
+
+	const availability = $derived(room.availability ?? null);
+	const busyRanges = $derived(availability?.busy_ranges ?? []);
+
+	const today = new Date().toISOString().slice(0, 10);
+	// Première arrivée possible : la chambre peut être occupée aujourd'hui.
+	const minCheckIn = $derived(availability?.available_from ?? today);
+
+	let checkIn = $state('');
+	let checkOut = $state('');
+
+	// Après un refus serveur, la page n'est pas remontée : on repeuple les
+	// dates saisies pour que le client n'ait pas à les ressaisir.
+	$effect(() => {
+		if (form?.check_in) checkIn = form.check_in;
+		if (form?.check_out) checkOut = form.check_out;
+	});
+
+	// Un séjour [a, b) chevauche une période prise [from, to) si a < to et from < b.
+	// Bornes semi-ouvertes des deux côtés : le jour du départ d'un client est
+	// réservable par le suivant, c'est le ménage qui tranche ensuite.
+	function overlapsBusy(from: string, to: string): boolean {
+		return busyRanges.some((range) => from < range.to && range.from < to);
+	}
+
+	const dateError = $derived.by(() => {
+		if (!checkIn || !checkOut) return null;
+		if (checkOut <= checkIn) return 'La date de départ doit être postérieure à la date d’arrivée.';
+		if (checkIn < today) return 'La date d’arrivée est déjà passée.';
+		if (overlapsBusy(checkIn, checkOut)) {
+			return 'Cette chambre est déjà occupée sur cette période. Choisissez d’autres dates.';
+		}
+		return null;
+	});
+
+	/** Périodes à venir, formulées pour être lues d'un coup d'œil. */
+	const busyLabels = $derived(
+		busyRanges.slice(0, 4).map((range) => {
+			const fmt = (iso: string) =>
+				new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+			return `${fmt(range.from)} → ${fmt(range.to)}`;
+		})
+	);
 
 	// Les équipements sont des libellés libres saisis dans l'application de
 	// l'établissement : on associe une icône par mot-clé, avec un repli générique.
@@ -92,6 +141,7 @@
 						{#if room.floor}
 							<span class="text-vb-slate/70 font-sans text-[0.75rem]">Étage {room.floor}</span>
 						{/if}
+						<AvailabilityBadge {availability} size="md" />
 					</div>
 					<h1 class="font-serif text-[clamp(2rem,4vw,3rem)] font-bold text-vb-dark leading-tight mb-6">
 						{room.name}
@@ -202,17 +252,38 @@
 								</div>
 							{/if}
 
+							<!-- Périodes déjà prises : le client les voit avant de choisir,
+							     plutôt que de découvrir le refus après avoir tout saisi. -->
+							{#if busyLabels.length > 0}
+								<div class="font-sans text-[0.75rem] text-vb-slate bg-vb-ivory border border-vb-ivory3 rounded-[4px] px-3 py-2.5">
+									<span class="font-semibold text-vb-dark">Déjà réservée :</span>
+									<span class="ml-1">{busyLabels.join(' · ')}</span>
+									{#if busyRanges.length > busyLabels.length}
+										<span class="opacity-70"> et {busyRanges.length - busyLabels.length} autre(s)</span>
+									{/if}
+									<span class="block mt-1 opacity-80">
+										Le jour du départ reste réservable — la chambre est remise en état dans la journée.
+									</span>
+								</div>
+							{/if}
+
 							<!-- Dates -->
 							<div class="grid grid-cols-2 gap-3">
 								<div class="flex flex-col gap-1.5">
 									<label for="check_in" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Arrivée</label>
-									<input type="date" id="check_in" name="check_in" value={form?.check_in ?? ''} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+									<input type="date" id="check_in" name="check_in" bind:value={checkIn} min={minCheckIn} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
 								</div>
 								<div class="flex flex-col gap-1.5">
 									<label for="check_out" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Départ</label>
-									<input type="date" id="check_out" name="check_out" value={form?.check_out ?? ''} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
+									<input type="date" id="check_out" name="check_out" bind:value={checkOut} min={checkIn || minCheckIn} required class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark" />
 								</div>
 							</div>
+
+							{#if dateError}
+								<div class="font-sans text-[0.8rem] text-amber-800 bg-amber-50 border border-amber-200 rounded-[4px] px-3 py-2.5">
+									{dateError}
+								</div>
+							{/if}
 
 							<!-- Voyageurs (borné par la capacité max du type de chambre) -->
 							<div class="flex flex-col gap-1.5">
@@ -248,8 +319,9 @@
 								<textarea id="notes" name="notes" rows="2" class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark resize-none">{form?.notes ?? ''}</textarea>
 							</div>
 
-							<!-- Bouton -->
-							<button type="submit" disabled={submitting} class="w-full mt-2 bg-vb-green hover:bg-vb-green2 text-vb-white font-sans font-semibold text-[1rem] tracking-wider py-4 rounded-[4px] transition-colors duration-200 disabled:opacity-60 disabled:cursor-wait">
+							<!-- Bouton : bloqué tant que les dates ne tiennent pas debout,
+							     inutile d'envoyer une demande vouée au refus. -->
+							<button type="submit" disabled={submitting || dateError !== null} class="w-full mt-2 bg-vb-green hover:bg-vb-green2 text-vb-white font-sans font-semibold text-[1rem] tracking-wider py-4 rounded-[4px] transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed">
 								{submitting ? 'Envoi en cours…' : 'Réserver cette chambre'}
 							</button>
 
