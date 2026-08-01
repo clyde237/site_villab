@@ -195,6 +195,33 @@ export interface RoomTypeApi {
 	available_rooms_count: number;
 }
 
+/**
+ * Disponibilité d'une chambre (miroir de RoomAvailabilityService::payload()).
+ *
+ * Une chambre occupée reste au catalogue : elle se réserve pour les dates où
+ * elle sera libre. `busy_ranges` liste les périodes déjà prises sur les douze
+ * prochains mois, pour que le formulaire refuse ces dates au lieu de laisser
+ * partir une demande qui reviendrait en 409.
+ */
+export interface RoomAvailabilityApi {
+	/** Faux uniquement en maintenance / hors service — jamais renvoyé par /rooms. */
+	sellable: boolean;
+	state: 'available' | 'preparing' | 'occupied' | 'unavailable';
+	/** Prêt à afficher : « Disponible », « Occupée jusqu'au 15 septembre »… */
+	label: string | null;
+	/** Occupable immédiatement. */
+	ready_now: boolean;
+	/** Première date d'arrivée acceptable (AAAA-MM-JJ). */
+	available_from: string | null;
+	/** Fin de la remise en état, quand la chambre sort d'un départ. */
+	available_at: string | null;
+	minutes_remaining: number | null;
+	/** Périodes occupées : [from, to) — le jour `to` est libre après ménage. */
+	busy_ranges: { from: string; to: string }[];
+	check_in_time: string;
+	check_out_time: string;
+}
+
 // Chambre individuelle (infos du type aplaties + caractéristiques propres)
 export interface RoomApi {
 	id: number;
@@ -211,6 +238,7 @@ export interface RoomApi {
 	amenities: string[];
 	photos: string[];
 	price: { amount: number; formatted: string };
+	availability: RoomAvailabilityApi;
 }
 
 export interface MenuItemApi {

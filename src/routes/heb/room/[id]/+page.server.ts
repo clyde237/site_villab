@@ -4,8 +4,9 @@ import { fetchTenantApi, postTenantApi } from '$lib/server/api';
 import type { RoomApi } from '$lib/types/api';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
-	// L'API renvoie 404 si la chambre est inactive ou indisponible
-	// (voir PublicRoomController::roomShow côté meka_template).
+	// L'API renvoie 404 si la chambre est inactive, en maintenance ou hors
+	// service (voir PublicRoomController::roomShow côté wetchah_app). Une
+	// chambre occupée, elle, répond bien : elle se réserve pour plus tard.
 	const room = await fetchTenantApi<{ data: RoomApi }>(`/rooms/${params.id}`, fetch);
 
 	if (!room?.data) {
@@ -30,7 +31,10 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			photos: r.photos,
 			// Même convention que la liste : juste le nombre, le suffixe
 			// "FCFA / nuit" est posé par le template.
-			price: new Intl.NumberFormat('fr-FR').format(r.price.amount / 100)
+			price: new Intl.NumberFormat('fr-FR').format(r.price.amount / 100),
+			// Périodes prises et première date libre : le formulaire s'en sert
+			// pour refuser sur place les dates que l'API rejetterait en 409.
+			availability: r.availability ?? null
 		}
 	};
 };

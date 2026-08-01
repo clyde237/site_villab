@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Maximize, User, ArrowRight } from '@lucide/svelte';
+	import AvailabilityBadge from './AvailabilityBadge.svelte';
+	import type { RoomAvailabilityApi } from '$lib/types/api';
 
 	interface Room {
 		id: number;
@@ -10,6 +12,7 @@
 		capacity: string;
 		amenities: string[];
 		price: string;
+		availability?: RoomAvailabilityApi | null;
 	}
 
 	let { rooms = [] }: { rooms: Room[] } = $props();
@@ -52,6 +55,14 @@
 						<span class="absolute top-3 left-3 bg-vb-white/90 text-vb-dark font-sans text-[0.7rem] font-semibold px-2.5 py-1 rounded-full shadow-sm">
 							Chambre {room.number}
 						</span>
+
+						<!-- État du moment. Une chambre occupée reste réservable pour
+						     plus tard : la pastille dit jusqu'à quand elle est prise. -->
+						{#if room.availability}
+							<div class="absolute bottom-3 left-3 right-3 flex justify-start">
+								<AvailabilityBadge availability={room.availability} />
+							</div>
+						{/if}
 					</div>
 
 					<!-- Corps de la carte -->
