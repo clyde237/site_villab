@@ -45,11 +45,18 @@
 	let checkIn = $state('');
 	let checkOut = $state('');
 
-	// Après un refus serveur, la page n'est pas remontée : on repeuple les
-	// dates saisies pour que le client n'ait pas à les ressaisir.
+	/**
+	 * Dates de départ du formulaire : celles saisies si le serveur vient de
+	 * refuser, sinon celles de la recherche faite depuis l'accueil.
+	 *
+	 * Un effet plutôt qu'une valeur initiale : en passant d'une chambre à
+	 * l'autre, le composant n'est pas remonté, et des dates figées au premier
+	 * rendu resteraient celles de la chambre précédente. L'effet ne dépend
+	 * pas de `checkIn`, donc il n'écrase pas ce que le visiteur a saisi.
+	 */
 	$effect(() => {
-		if (form?.check_in) checkIn = form.check_in;
-		if (form?.check_out) checkOut = form.check_out;
+		checkIn = form?.check_in ?? data.prefill?.arrivee ?? '';
+		checkOut = form?.check_out ?? data.prefill?.depart ?? '';
 	});
 
 	// Un séjour [a, b) chevauche une période prise [from, to) si a < to et from < b.
@@ -290,7 +297,7 @@
 								<label for="guests" class="font-sans text-[0.75rem] font-semibold text-vb-slate uppercase">Voyageurs</label>
 								<select id="guests" name="guests" class="font-sans text-[0.9rem] p-3 border-[1.5px] border-vb-ivory3 rounded-[4px] focus:border-vb-gold focus:ring-1 focus:ring-vb-gold outline-none bg-vb-ivory text-vb-dark">
 									{#each Array.from({ length: room.maxCapacity }, (_, i) => i + 1) as n}
-										<option value={String(n)} selected={String(n) === String(form?.adults ?? 2)}>{n} {n > 1 ? 'Personnes' : 'Personne'}</option>
+										<option value={String(n)} selected={String(n) === String(form?.adults ?? (data.prefill?.voyageurs || 2))}>{n} {n > 1 ? 'Personnes' : 'Personne'}</option>
 									{/each}
 								</select>
 							</div>

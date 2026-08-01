@@ -3,7 +3,9 @@ import type { Actions, PageServerLoad } from './$types';
 import { fetchTenantApi, postTenantApi } from '$lib/server/api';
 import type { RoomApi } from '$lib/types/api';
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
+const FORMAT_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+export const load: PageServerLoad = async ({ params, fetch, url }) => {
 	// L'API renvoie 404 si la chambre est inactive, en maintenance ou hors
 	// service (voir PublicRoomController::roomShow côté wetchah_app). Une
 	// chambre occupée, elle, répond bien : elle se réserve pour plus tard.
@@ -35,6 +37,16 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			// Périodes prises et première date libre : le formulaire s'en sert
 			// pour refuser sur place les dates que l'API rejetterait en 409.
 			availability: r.availability ?? null
+		},
+		// Critères venant du widget de réservation : le visiteur qui a cherché
+		// des dates les retrouve préremplies, au lieu de les ressaisir.
+		prefill: {
+			arrivee: FORMAT_DATE.test(url.searchParams.get('arrivee') ?? '') ? url.searchParams.get('arrivee')! : '',
+			depart: FORMAT_DATE.test(url.searchParams.get('depart') ?? '') ? url.searchParams.get('depart')! : '',
+			voyageurs: Math.max(
+				1,
+				Number(url.searchParams.get('adultes') ?? 0) + Number(url.searchParams.get('enfants') ?? 0) || 0
+			)
 		}
 	};
 };
