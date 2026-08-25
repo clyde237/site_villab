@@ -1,42 +1,116 @@
-# sv
+# WeTchah Site — Site vitrine des établissements
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Le site public d'un établissement de la plateforme WeTchah : présentation,
+hébergements, restaurant, et demande de réservation en ligne.
 
-## Creating a project
+**Une seule image pour tous les établissements.** Le site n'a ni base de données ni
+contenu propre : il assemble à l'exécution deux sources distantes, désignées par ses
+variables d'environnement. Seul `TENANT_SLUG` change d'un établissement à l'autre.
 
-If you're seeing this, you've probably already done this step. Congrats!
+---
 
-```sh
-# create a new project
-npx sv create my-app
+## Les trois dépôts de la plateforme
+
+| Dépôt | Rôle | Stack |
+|---|---|---|
+| [`wetchah_erp`](https://github.com/Adrien-Stage/erp_pms) | La console qui fabrique et supervise les établissements | Laravel 12, SQLite |
+| [`wetchah_app`](https://github.com/Adrien-Stage/villa_b) | Le PMS livré à chaque établissement | Laravel 12, PostgreSQL |
+| **`wetchah_site`** *(ce dépôt)* | Le site vitrine public, optionnel | SvelteKit 2 / Svelte 5 |
+
+---
+
+## D'où vient le contenu
+
+```
+       wetchah_erp                         wetchah_app
+   contenu marketing, identité         chambres, tarifs, menu
+     (textes, images, SEO)              (données réelles, live)
+            │                                    │
+      CMS_API_URL                         TENANT_API_URL
+            └──────────────┬─────────────────────┘
+                           ▼
+                     wetchah_site
+              assemble, rend, et renvoie
+              les demandes de réservation
 ```
 
-To recreate this project with the same configuration:
+Une conséquence utile : **la réception n'a jamais à ressaisir quoi que ce soit pour
+le site**. Une chambre créée dans l'application apparaît sur le site ; un plat ajouté
+à la carte apparaît au menu.
 
-```sh
-# recreate this project
-npx sv@0.16.1 create --template minimal --types ts --add prettier tailwindcss="plugins:typography,forms" --install npm villa_b
+---
+
+## Pages
+
+| Route | Contenu |
+|---|---|
+| `/` | Accueil — jusqu'à 12 sections activables depuis le CMS |
+| `/heb` | Hébergements — catalogue filtrable par dates et capacité |
+| `/heb/room/[id]` | Fiche chambre + formulaire de demande de réservation |
+| `/resto` | Restaurant — carte tirée de l'application |
+| `/about` | À propos |
+| `/contact` | Contact et localisation |
+| `/health` | Sonde de santé (JSON), sans rendu ni appel externe |
+
+---
+
+## Démarrage rapide
+
+```bash
+npm install
 ```
 
-## Developing
+```bash
+cp .env.example .env
+```
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
+```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Sans API configurée, le site tourne en **mode démo** : chaque section retombe sur son
+contenu statique. C'est voulu — on peut travailler l'interface sans lancer l'ERP.
 
-To create a production version of your app:
+Installation complète : **[docs/installation.md](docs/installation.md)**.
 
-```sh
-npm run build
+---
+
+## Documentation
+
+| Document | Contenu |
+|---|---|
+| **[Architecture](docs/architecture.md)** | Site sans état, les deux sources, dégradation, structure du code |
+| **[Installation](docs/installation.md)** | Développement local, mode démo, branchement sur un ERP réel |
+| **[Configuration](docs/configuration.md)** | Les quatre variables d'environnement, et pourquoi `ORIGIN` est critique |
+| **[Contenu et CMS](docs/contenu-et-cms.md)** | Sections activables, cascade de repli, contrat de contenu |
+| **[Réservation](docs/reservation.md)** | Widget, filtrage par dates, fiche chambre, envoi de la demande |
+| **[Déploiement](docs/deploiement.md)** | Image Docker, CI, provisioning, mise à jour |
+| **[Développement](docs/developpement.md)** | Conventions Svelte 5, styles, vérifications, dette connue |
+
+---
+
+## Structure du code
+
+```
+src/
+├─ lib/
+│  ├─ server/api.ts        Le seul point d'accès aux APIs distantes
+│  ├─ types/api.ts         Contrat de données avec l'ERP et l'application
+│  └─ components/
+│     ├─ *.svelte          Sections de l'accueil (Hero, Rooms, Offers…)
+│     ├─ heb/ resto/       Sections des pages internes
+│     ├─ about/ contact/
+│     └─ ui/               Primitives shadcn-svelte
+└─ routes/
+   ├─ +layout.server.ts    Charge le contenu CMS et pinge l'application
+   ├─ +page.server.ts      Accueil
+   ├─ heb/                 Catalogue et fiche chambre (+ action de réservation)
+   ├─ resto/               Carte
+   └─ health/              Sonde
 ```
 
-You can preview the production build with `npm run preview`.
+---
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Licence
+
+Projet propriétaire. Tous droits réservés.
