@@ -1,0 +1,44 @@
+name: Vérifications
+
+# Le dépôt ne contient aucun test : la compilation et le contrôle de types
+# sont donc les seuls garde-fous avant publication. Sans eux, une erreur de
+# syntaxe ou un import cassé ne se manifestait qu'au build de l'image — ou,
+# pire, sur le site public d'un établissement.
+on:
+  # main est déjà couvert par build-image.yml, qui appelle ce workflow avant
+  # de publier : l'exclure ici évite de faire tourner les vérifications deux fois.
+  push:
+    branches-ignore: [main]
+  pull_request:
+  workflow_call:      # appelé par build-image.yml, qui refuse de publier si ceci échoue
+  workflow_dispatch:
+
+jobs:
+  frontend:
+    name: Contrôle de types & compilation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          # Même version que l'image de production (node:22-alpine) : vérifier
+          # sur une autre reviendrait à valider un environnement que personne
+          # n'exécute.
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # npm ci, et non npm install : il installe exactement le verrou et
+      # échoue si package-lock.json a divergé de package.json.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Contrôle de types
+        run: npm run check
+
+      - name: Compilation
+        run: npm run build
