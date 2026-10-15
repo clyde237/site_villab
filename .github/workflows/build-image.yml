@@ -13,7 +13,14 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
+  # Barrière avant publication : le provisioning déploie l'image publiée ici
+  # sur le site public de chaque établissement. Une compilation cassée ne doit
+  # pas pouvoir l'atteindre.
+  checks:
+    uses: ./.github/workflows/checks.yml
+
   build-and-push:
+    needs: checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
